@@ -1,0 +1,221 @@
+erDiagram
+    users |o--o{ audit_logs : "user_id"
+    projects ||--o{ contribution_evidence : "project_id"
+    tasks |o--o{ contribution_evidence : "task_id"
+    users ||--o{ contribution_evidence : "user_id"
+    users |o--o{ contribution_evidence : "verified_by"
+    departments ||--o{ courses : "dept_id"
+    milestones ||--o{ deliverables : "milestone_id"
+    users ||--o{ deliverables : "submitted_by"
+    deliverables ||--o{ document_versions : "deliverable_id"
+    users ||--o{ document_versions : "uploaded_by"
+    users ||--o{ feedback_items : "assigned_user_id"
+    users ||--o{ feedback_items : "created_by"
+    reviews ||--o{ feedback_items : "review_id"
+    users |o--o{ feedback_items : "verified_by"
+    projects ||--o{ git_activities : "project_id"
+    users |o--o{ git_activities : "recorded_by"
+    tasks |o--o{ git_activities : "task_id"
+    users ||--o{ git_activities : "user_id"
+    users |o--o{ guide_allocations : "allocated_by"
+    projects ||--o{ guide_allocations : "project_id"
+    users ||--o{ guide_allocations : "user_id"
+    milestones ||--o{ milestone_required_deliverables : "milestone_id"
+    users |o--o{ milestones : "approved_by"
+    projects ||--o{ milestones : "project_id"
+    users ||--o{ notifications : "user_id"
+    users ||--o{ peer_evaluations : "evaluatee_id"
+    users ||--o{ peer_evaluations : "evaluator_id"
+    milestones |o--o{ peer_evaluations : "milestone_id"
+    projects ||--o{ peer_evaluations : "project_id"
+    courses ||--o{ project_embeddings : "course_id"
+    projects ||--o{ project_embeddings : "project_id"
+    courses |o--o{ project_templates : "course_id"
+    users |o--o{ project_templates : "created_by"
+    users |o--o{ projects : "approved_by"
+    users ||--o{ projects : "created_by"
+    teams ||--o{ projects : "team_id+course_id"
+    project_templates |o--o{ projects : "template_id"
+    users ||--o{ proposal_actions : "actor_id"
+    projects ||--o{ proposal_actions : "project_id"
+    reviews ||--o{ review_scores : "review_id"
+    milestones ||--o{ reviews : "milestone_id"
+    users ||--o{ reviews : "reviewer_id"
+    projects ||--o{ risk_assessments : "project_id"
+    milestones |o--o{ risk_events : "milestone_id"
+    projects ||--o{ risk_events : "project_id"
+    projects ||--o{ similarity_reviews : "matched_project_id"
+    users |o--o{ similarity_reviews : "reviewed_by"
+    projects ||--o{ similarity_reviews : "source_project_id"
+    users |o--o{ task_assignments : "assigned_by"
+    tasks ||--o{ task_assignments : "task_id"
+    users ||--o{ task_assignments : "user_id"
+    users |o--o{ tasks : "created_by"
+    milestones ||--o{ tasks : "milestone_id"
+    users |o--o{ tasks : "verified_by"
+    teams ||--o{ team_members : "team_id+course_id"
+    users ||--o{ team_members : "user_id"
+    courses ||--o{ teams : "course_id"
+    users |o--o{ teams : "created_by"
+    project_templates ||--o{ template_milestones : "template_id"
+    users |o--o{ user_roles : "assigned_by"
+    roles ||--o{ user_roles : "role_id"
+    users ||--o{ user_roles : "user_id"
+    departments |o--o{ users : "dept_id"
+    audit_logs {
+        bigint log_id PK
+        integer user_id FK
+    }
+    contribution_evidence {
+        integer evidence_id PK
+        integer project_id FK
+        integer user_id FK
+        integer task_id FK
+        integer verified_by FK
+    }
+    courses {
+        integer course_id PK
+        integer dept_id FK
+    }
+    deliverables {
+        integer deliverable_id PK
+        integer milestone_id FK
+        integer submitted_by FK
+    }
+    departments {
+        integer dept_id PK
+    }
+    document_versions {
+        integer version_id PK
+        integer deliverable_id FK
+        integer uploaded_by FK
+    }
+    feedback_items {
+        integer feedback_id PK
+        integer review_id FK
+        integer created_by FK
+        integer assigned_user_id FK
+        integer verified_by FK
+    }
+    git_activities {
+        integer git_id PK
+        integer project_id FK
+        integer task_id FK
+        integer user_id FK
+        integer recorded_by FK
+    }
+    guide_allocations {
+        integer allocation_id PK
+        integer project_id FK
+        integer user_id FK
+        integer allocated_by FK
+    }
+    milestone_required_deliverables {
+        integer milestone_id PK,FK
+        varchar deliverable_type PK
+    }
+    milestones {
+        integer milestone_id PK
+        integer project_id FK
+        integer approved_by FK
+    }
+    notifications {
+        integer notification_id PK
+        integer user_id FK
+    }
+    peer_evaluations {
+        integer evaluation_id PK
+        integer project_id FK
+        integer milestone_id FK
+        integer evaluator_id FK
+        integer evaluatee_id FK
+    }
+    project_embeddings {
+        integer embedding_id PK
+        integer project_id FK
+        integer course_id FK
+    }
+    project_templates {
+        integer template_id PK
+        integer course_id FK
+        integer created_by FK
+    }
+    projects {
+        integer project_id PK
+        integer team_id FK
+        integer course_id FK
+        integer template_id FK
+        integer created_by FK
+        integer approved_by FK
+    }
+    proposal_actions {
+        integer action_id PK
+        integer project_id FK
+        integer actor_id FK
+    }
+    review_scores {
+        integer review_id PK,FK
+        varchar criterion PK
+    }
+    reviews {
+        integer review_id PK
+        integer milestone_id FK
+        integer reviewer_id FK
+    }
+    risk_assessments {
+        integer risk_id PK
+        integer project_id FK
+    }
+    risk_events {
+        integer event_id PK
+        integer project_id FK
+        integer milestone_id FK
+    }
+    roles {
+        integer role_id PK
+    }
+    similarity_reviews {
+        integer similarity_id PK
+        integer source_project_id FK
+        integer matched_project_id FK
+        integer reviewed_by FK
+    }
+    status_transitions {
+        varchar entity_type PK
+        varchar from_status PK
+        varchar to_status PK
+    }
+    task_assignments {
+        integer task_id PK,FK
+        integer user_id PK,FK
+        integer assigned_by FK
+    }
+    tasks {
+        integer task_id PK
+        integer milestone_id FK
+        integer verified_by FK
+        integer created_by FK
+    }
+    team_members {
+        integer team_id PK,FK
+        integer course_id FK
+        integer user_id PK,FK
+    }
+    teams {
+        integer team_id PK
+        integer course_id FK
+        integer created_by FK
+    }
+    template_milestones {
+        integer template_milestone_id PK
+        integer template_id FK
+    }
+    user_roles {
+        integer user_id PK,FK
+        integer role_id PK,FK
+        integer assigned_by FK
+    }
+    users {
+        integer user_id PK
+        integer dept_id FK
+    }
