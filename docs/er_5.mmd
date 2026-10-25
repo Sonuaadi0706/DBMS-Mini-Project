@@ -1,0 +1,43 @@
+erDiagram
+    courses ||--o{ project_embeddings : "course_id"
+    projects ||--o{ project_embeddings : "project_id"
+    projects ||--o{ similarity_reviews : "matched_project_id"
+    projects ||--o{ similarity_reviews : "source_project_id"
+    project_embeddings {
+        integer embedding_id PK
+        integer project_id FK
+        integer course_id FK
+        varchar section_type
+        integer chunk_index
+        text chunk_text
+        vector embedding
+        varchar model_name
+        boolean is_current
+        varchar access_level
+        timestamptz created_at
+    }
+    similarity_reviews {
+        integer similarity_id PK
+        integer source_project_id FK
+        integer matched_project_id FK
+        numeric similarity_score
+        varchar matched_section
+        text source_excerpt
+        text matched_excerpt
+        varchar faculty_decision
+        text comments
+        integer reviewed_by FK
+        timestamptz created_at
+        timestamptz decided_at
+    }
+    status_transitions {
+        varchar entity_type PK
+        varchar from_status PK
+        varchar to_status PK
+    }
+    courses {
+        integer course_id PK
+    }
+    projects {
+        integer project_id PK
+    }

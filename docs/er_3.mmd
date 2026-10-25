@@ -1,0 +1,92 @@
+erDiagram
+    milestones ||--o{ deliverables : "milestone_id"
+    deliverables ||--o{ document_versions : "deliverable_id"
+    users ||--o{ feedback_items : "assigned_user_id"
+    reviews ||--o{ feedback_items : "review_id"
+    projects ||--o{ milestones : "project_id"
+    reviews ||--o{ review_scores : "review_id"
+    milestones ||--o{ reviews : "milestone_id"
+    users ||--o{ reviews : "reviewer_id"
+    milestones {
+        integer milestone_id PK
+        integer project_id FK
+        integer sequence_no
+        varchar title
+        text description
+        date start_date
+        date due_date
+        varchar status
+        numeric weightage
+        timestamptz submitted_at
+        integer approved_by FK
+        timestamptz approved_at
+        text approval_comments
+        timestamptz created_at
+        timestamptz updated_at
+        varchar required_evidence_type
+    }
+    deliverables {
+        integer deliverable_id PK
+        integer milestone_id FK
+        varchar deliverable_type
+        varchar title
+        text repo_link
+        text evidence_url
+        varchar mongo_doc_id
+        varchar status
+        integer submitted_by FK
+        timestamptz submitted_at
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    document_versions {
+        integer version_id PK
+        integer deliverable_id FK
+        integer version_number
+        varchar change_summary
+        varchar file_name
+        text file_url
+        bigint file_size_bytes
+        character checksum_sha256
+        integer uploaded_by FK
+        timestamptz uploaded_at
+    }
+    reviews {
+        integer review_id PK
+        integer milestone_id FK
+        integer reviewer_id FK
+        varchar review_type
+        varchar decision
+        text comments
+        numeric total_score
+        date review_date
+        timestamptz created_at
+    }
+    review_scores {
+        integer review_id PK,FK
+        varchar criterion PK
+        numeric max_score
+        numeric score
+    }
+    feedback_items {
+        integer feedback_id PK
+        integer review_id FK
+        integer created_by FK
+        integer assigned_user_id FK
+        text description
+        varchar severity
+        varchar resolution_status
+        text response_text
+        date due_date
+        timestamptz resolved_at
+        integer verified_by FK
+        timestamptz verified_at
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    users {
+        integer user_id PK
+    }
+    projects {
+        integer project_id PK
+    }

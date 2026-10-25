@@ -90,7 +90,7 @@ async function main() {
     }
     if (kind === 'mongo') {
       const [coll, title, pipeline] = pipes[a];
-      const out = await mdb.collection(coll).aggregate(pipeline as any).project({ extractedText: 0 }).toArray();
+      const out = await mdb.collection(coll).aggregate([...pipeline] as any).project({ extractedText: 0 }).toArray();
       return `\n**${a}: ${title}**${fence('js', `db.${coll}.aggregate(${JSON.stringify(pipeline, null, 2)})`)}**Output**${fence('json', JSON.stringify(out.slice(0, 6), null, 2))}`;
     }
     if (kind === 'mongodoc') {
@@ -108,6 +108,7 @@ async function main() {
                                        JOIN projects p ON p.project_id=b.project_id WHERE a.project_id=$1 AND a.section_type <> 'document_chunk' AND b.is_current GROUP BY p.title ORDER BY 2 DESC`, [pair.source_project_id])).rows;
       return `\n**Flagged pair stored for faculty review** (table \`similarity_reviews\`):${table([pair], 1)}\n**Section-by-section cosine similarity** (Echo against Alpha):${table(secs)}\n**Echo against every other proposal in its course** (mean of the section similarities; only the first pair crosses the review threshold):${table(other)}`;
     }
+    if (kind === 'erdomains') return read('docs/er_domains.md').replace(/^# .*\n/, '').replace(/^_Generated.*\n/m, '').replace(/^## /gm, '#### ');
     if (kind === 'git') return fence('', execSync('git --no-pager shortlog -sne --all 2>/dev/null || true', { cwd: ROOT, encoding: 'utf8' }) || '(no commits yet)');
     if (kind === 'tablesummary') {
       const md = read('docs/data_dictionary.md');
@@ -136,11 +137,12 @@ async function main() {
   const renderer = new marked.Renderer();
   const origCode = renderer.code.bind(renderer);
   renderer.code = (token) => (token.lang === 'mermaid' ? `<pre class="mermaid">${token.text}</pre>` : origCode(token));
-  const body = await marked.parse(built, { gfm: true, renderer });
+  const BREAK = /^(5\.|9\.|10\.|11\.|12\.|14\.|15\.|Appendix)/;   // only the big sections start a new page
+  const body = (await marked.parse(built, { gfm: true, renderer })).replace(/<h1>([^<]+)<\/h1>/g, (m, t) => (BREAK.test(t) ? `<h1 class="brk">${t}</h1>` : m));
   const css = fs.readFileSync(path.join(ROOT, 'docs/report.css'), 'utf8');
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>ProjectPulse report</title><style>${css}</style></head><body>${body}
 <script src="file://${ROOT}/node_modules/mermaid/dist/mermaid.min.js"></script>
-<script>window.__mermaidDone = (async () => { mermaid.initialize({ startOnLoad: false, theme: 'neutral', maxTextSize: 400000, er: { useMaxWidth: false, layoutDirection: 'LR' }, flowchart: { useMaxWidth: false, htmlLabels: true } }); await mermaid.run({ querySelector: '.mermaid' }); return true; })().catch((e) => { document.title = 'mermaid error: ' + e.message; return false; });</script>
+<script>window.__mermaidDone = (async () => { mermaid.initialize({ startOnLoad: false, theme: 'neutral', maxTextSize: 400000, er: { useMaxWidth: true, layoutDirection: 'TB', minEntityWidth: 110, entityPadding: 6, fontSize: 12 }, flowchart: { useMaxWidth: false, htmlLabels: true } }); await mermaid.run({ querySelector: '.mermaid' }); return true; })().catch((e) => { document.title = 'mermaid error: ' + e.message; return false; });</script>
 </body></html>`;
   const htmlPath = path.join(ROOT, 'docs/report.html');
   fs.writeFileSync(htmlPath, html);

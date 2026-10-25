@@ -1,0 +1,129 @@
+erDiagram
+    projects ||--o{ guide_allocations : "project_id"
+    users ||--o{ guide_allocations : "user_id"
+    milestones ||--o{ milestone_required_deliverables : "milestone_id"
+    projects ||--o{ milestones : "project_id"
+    courses |o--o{ project_templates : "course_id"
+    teams ||--o{ projects : "team_id+course_id"
+    project_templates |o--o{ projects : "template_id"
+    users ||--o{ proposal_actions : "actor_id"
+    projects ||--o{ proposal_actions : "project_id"
+    tasks ||--o{ task_assignments : "task_id"
+    users ||--o{ task_assignments : "user_id"
+    milestones ||--o{ tasks : "milestone_id"
+    project_templates ||--o{ template_milestones : "template_id"
+    projects {
+        integer project_id PK
+        integer team_id FK
+        integer course_id FK
+        integer template_id FK
+        varchar title
+        text abstract
+        text problem_statement
+        text objectives
+        text scope
+        varchar domain
+        text_array technologies
+        text repo_link
+        varchar status
+        date start_date
+        date end_date
+        integer created_by FK
+        timestamptz submitted_at
+        integer approved_by FK
+        timestamptz approved_at
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    proposal_actions {
+        integer action_id PK
+        integer project_id FK
+        integer actor_id FK
+        varchar action
+        varchar from_status
+        varchar to_status
+        text comments
+        timestamptz created_at
+    }
+    guide_allocations {
+        integer allocation_id PK
+        integer project_id FK
+        integer user_id FK
+        varchar allocation_role
+        integer allocated_by FK
+        timestamptz allocated_at
+    }
+    project_templates {
+        integer template_id PK
+        integer course_id FK
+        varchar name UK
+        text description
+        boolean is_active
+        integer created_by FK
+        timestamptz created_at
+    }
+    template_milestones {
+        integer template_milestone_id PK
+        integer template_id FK
+        integer sequence_no
+        varchar title
+        integer offset_days
+        numeric weightage
+        text_array required_deliverable_types
+    }
+    milestones {
+        integer milestone_id PK
+        integer project_id FK
+        integer sequence_no
+        varchar title
+        text description
+        date start_date
+        date due_date
+        varchar status
+        numeric weightage
+        timestamptz submitted_at
+        integer approved_by FK
+        timestamptz approved_at
+        text approval_comments
+        timestamptz created_at
+        timestamptz updated_at
+        varchar required_evidence_type
+    }
+    milestone_required_deliverables {
+        integer milestone_id PK,FK
+        varchar deliverable_type PK
+    }
+    tasks {
+        integer task_id PK
+        integer milestone_id FK
+        varchar title
+        text description
+        varchar status
+        varchar priority
+        numeric effort_hours
+        date planned_start_date
+        date planned_completion_date
+        date actual_completion_date
+        date due_date
+        integer verified_by FK
+        timestamptz verified_at
+        integer created_by FK
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    task_assignments {
+        integer task_id PK,FK
+        integer user_id PK,FK
+        varchar assignment_type
+        integer assigned_by FK
+        timestamptz assigned_at
+    }
+    users {
+        integer user_id PK
+    }
+    courses {
+        integer course_id PK
+    }
+    teams {
+        integer team_id PK
+    }

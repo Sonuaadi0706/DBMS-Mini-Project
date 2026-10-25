@@ -82,13 +82,11 @@ All P0 (must) and P1 (should) requirements of the specification are implemented 
 
 # 5. ER diagram
 
-The diagram below is **generated from the live database catalogue** (`npm run docs:data-dictionary`): {{tables}} tables and {{relationships}} foreign-key relationships. For readability it shows primary and foreign keys only; every attribute is in the data dictionary (Appendix A) and in `docs/er_diagram.mmd`. A line with a circle at the parent end is an optional relationship (nullable foreign key). The crow's foot is the "many" side.
+The diagrams below are **generated from the live database catalogue** (`npm run docs:data-dictionary`): {{tables}} tables and {{relationships}} foreign-key relationships. One picture of all tables would be unreadable, so the schema is drawn as five connected domain diagrams. Inside a domain every attribute is shown with its type and its key marks (PK, FK, UK); a table drawn with only its key is referenced from another domain. A line with a circle at the parent end is an optional relationship (nullable foreign key); the crow's foot is the "many" side. "Who did it" columns such as `created_by`, `approved_by` and `verified_by` (all foreign keys to `users`) are marked FK inside the boxes but not drawn as lines, so the pictures stay readable; all of them are listed in Appendix A. The same diagrams are in `docs/er_*.mmd`, and `docs/er_diagram.mmd` holds the whole schema in one file.
 
 <div class="wide">
 
-```mermaid
-<!--file:docs/er_overview.mmd-->
-```
+<!--erdomains-->
 
 </div>
 

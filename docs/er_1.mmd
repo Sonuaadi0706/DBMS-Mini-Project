@@ -1,0 +1,75 @@
+erDiagram
+    users |o--o{ audit_logs : "user_id"
+    departments ||--o{ courses : "dept_id"
+    teams ||--o{ team_members : "team_id+course_id"
+    users ||--o{ team_members : "user_id"
+    courses ||--o{ teams : "course_id"
+    roles ||--o{ user_roles : "role_id"
+    users ||--o{ user_roles : "user_id"
+    departments |o--o{ users : "dept_id"
+    departments {
+        integer dept_id PK
+        varchar dept_code UK
+        varchar dept_name UK
+        timestamptz created_at
+    }
+    courses {
+        integer course_id PK
+        integer dept_id FK
+        varchar course_code
+        varchar course_name
+        varchar semester
+        varchar academic_year
+        boolean is_active
+        timestamptz created_at
+    }
+    users {
+        integer user_id PK
+        varchar name
+        citext email UK
+        text password_hash
+        varchar status
+        integer dept_id FK
+        varchar identifier UK
+        integer failed_login_count
+        timestamptz locked_until
+        timestamptz last_login_at
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    roles {
+        integer role_id PK
+        varchar role_name UK
+        text description
+    }
+    user_roles {
+        integer user_id PK,FK
+        integer role_id PK,FK
+        timestamptz assigned_at
+        integer assigned_by FK
+    }
+    teams {
+        integer team_id PK
+        integer course_id FK
+        varchar team_name
+        integer created_by FK
+        timestamptz created_at
+    }
+    team_members {
+        integer team_id PK,FK
+        integer course_id FK
+        integer user_id PK,FK
+        varchar member_role
+        varchar responsibility
+        timestamptz joined_at
+    }
+    audit_logs {
+        bigint log_id PK
+        integer user_id FK
+        varchar action
+        varchar entity_type
+        varchar entity_id
+        jsonb old_values
+        jsonb new_values
+        timestamptz created_at
+    }

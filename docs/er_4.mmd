@@ -1,0 +1,81 @@
+erDiagram
+    projects ||--o{ contribution_evidence : "project_id"
+    tasks |o--o{ contribution_evidence : "task_id"
+    users ||--o{ contribution_evidence : "user_id"
+    projects ||--o{ git_activities : "project_id"
+    tasks |o--o{ git_activities : "task_id"
+    users ||--o{ git_activities : "user_id"
+    users ||--o{ peer_evaluations : "evaluatee_id"
+    users ||--o{ peer_evaluations : "evaluator_id"
+    milestones |o--o{ peer_evaluations : "milestone_id"
+    projects ||--o{ peer_evaluations : "project_id"
+    projects ||--o{ risk_assessments : "project_id"
+    milestones |o--o{ risk_events : "milestone_id"
+    projects ||--o{ risk_events : "project_id"
+    contribution_evidence {
+        integer evidence_id PK
+        integer project_id FK
+        integer user_id FK
+        integer task_id FK
+        varchar evidence_type
+        varchar description
+        numeric weight
+        boolean verified_flag
+        integer verified_by FK
+        timestamptz verified_at
+        varchar source_table
+        integer source_id
+        timestamptz created_at
+    }
+    git_activities {
+        integer git_id PK
+        integer project_id FK
+        integer task_id FK
+        integer user_id FK
+        text repo_url
+        varchar commit_ref
+        varchar commit_message
+        timestamptz committed_at
+        integer recorded_by FK
+        timestamptz created_at
+    }
+    peer_evaluations {
+        integer evaluation_id PK
+        integer project_id FK
+        integer milestone_id FK
+        integer evaluator_id FK
+        integer evaluatee_id FK
+        numeric score
+        varchar comments
+        timestamptz created_at
+    }
+    risk_assessments {
+        integer risk_id PK
+        integer project_id FK
+        numeric risk_score
+        varchar risk_level
+        text reason
+        jsonb breakdown
+        timestamptz calculated_at
+    }
+    risk_events {
+        integer event_id PK
+        integer project_id FK
+        integer milestone_id FK
+        varchar event_type
+        text details
+        timestamptz created_at
+        timestamptz resolved_at
+    }
+    projects {
+        integer project_id PK
+    }
+    tasks {
+        integer task_id PK
+    }
+    users {
+        integer user_id PK
+    }
+    milestones {
+        integer milestone_id PK
+    }

@@ -2,8 +2,9 @@
 @page wide { size: A4 landscape; margin: 12mm 10mm; }
 html { font: 10.2pt/1.45 -apple-system, "Helvetica Neue", Arial, sans-serif; color: #0f172a; }
 body { margin: 0; }
-h1 { font-size: 20pt; margin: 0 0 8pt; border-bottom: 2px solid #4338ca; padding-bottom: 4pt; page-break-before: always; }
-.cover + h1 { page-break-before: avoid; }
+h1 { font-size: 20pt; margin: 22pt 0 8pt; border-bottom: 2px solid #4338ca; padding-bottom: 4pt; page-break-after: avoid; }
+h1.brk { page-break-before: always; margin-top: 0; }
+.cover + h1 { page-break-before: avoid; margin-top: 0; }
 h2 { font-size: 13.5pt; margin: 16pt 0 5pt; color: #312e81; page-break-after: avoid; }
 h3 { font-size: 11.2pt; margin: 12pt 0 4pt; page-break-after: avoid; }
 h4, h5 { font-size: 10pt; margin: 10pt 0 3pt; page-break-after: avoid; }
@@ -29,5 +30,8 @@ blockquote { margin: 6pt 0; padding: 4pt 10pt; border-left: 3px solid #a5b4fc; b
 .wide + * { page: auto; }
 .mermaid { background: white; border: 0; text-align: center; padding: 0; }
 .mermaid svg { max-width: 100%; height: auto; }
-.wide .mermaid svg { max-height: 175mm; }
+.wide .mermaid { page-break-inside: avoid; margin-bottom: 4mm; }
+.wide .mermaid svg { max-height: 150mm; width: auto; max-width: 100%; }
+.wide h4 { page-break-before: always; margin-top: 0; }
+.wide h4:first-of-type { page-break-before: avoid; }
 .toc li { margin: 1pt 0; }

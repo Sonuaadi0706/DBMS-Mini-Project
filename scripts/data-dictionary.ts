@@ -117,6 +117,37 @@ async function main() {
     const shown = tables.filter((t) => t !== 'schema_migrations');
     fs.writeFileSync(path.resolve(__dirname, '../docs/er_diagram.mmd'), `erDiagram\n${rels.join('\n')}\n${shown.map((t) => entity(t, false)).join('\n')}\n`);
     fs.writeFileSync(path.resolve(__dirname, '../docs/er_overview.mmd'), `erDiagram\n${rels.join('\n')}\n${shown.map((t) => entity(t, true)).join('\n')}\n`);
+    // ---- domain ER diagrams: five readable pictures instead of one unreadable 32-table graph ------------------
+    const DOMAINS: { title: string; text: string; tables: string[] }[] = [
+      { title: 'Identity, academic context and teams', text: 'Who the users are, the departments and courses they belong to, and how students form teams (one team per student per course).',
+        tables: ['departments', 'courses', 'users', 'roles', 'user_roles', 'teams', 'team_members', 'audit_logs'] },
+      { title: 'Projects, allocation and planning', text: 'A team owns one active project; guides and reviewers are allocated; milestones and tasks plan the work; templates seed the plan.',
+        tables: ['projects', 'proposal_actions', 'guide_allocations', 'project_templates', 'template_milestones', 'milestones', 'milestone_required_deliverables', 'tasks', 'task_assignments'] },
+      { title: 'Deliverables, review and feedback', text: 'Submissions with versions, milestone reviews with rubric scores, and trackable feedback assigned to a student.',
+        tables: ['milestones', 'deliverables', 'document_versions', 'reviews', 'review_scores', 'feedback_items'] },
+      { title: 'Evidence, contribution and risk', text: 'Verifiable evidence per student, commit references, peer ratings, and the stored delivery-risk assessments and events.',
+        tables: ['contribution_evidence', 'git_activities', 'peer_evaluations', 'risk_assessments', 'risk_events'] },
+      { title: 'Originality (vector) and workflow control', text: 'Embeddings of proposal sections (pgvector) and the faculty decisions on possible overlap; the table that lists every legal status change.',
+        tables: ['project_embeddings', 'similarity_reviews', 'status_transitions'] },
+    ];
+    let domains = `# Entity-relationship diagrams by domain\n\n_Generated from the live catalogue. Tables drawn with all attributes belong to the domain; tables shown with only their key are referenced from another domain. Actor columns such as created_by, approved_by and verified_by (all foreign keys to users) are marked FK in the boxes but not drawn as lines, to keep the pictures readable._\n\n`;
+    for (const [i, dom] of DOMAINS.entries()) {
+      const inDom = new Set(dom.tables);
+      // "who did it" columns (created_by, approved_by, verified_by ...) all point at users; drawing every one of those lines
+      // buries the picture, so they stay in the attribute lists (marked FK) but are not drawn as lines.
+      const isActorColumn = (k: { ref_tbl: string; cols: string[] }) => k.ref_tbl === 'users' && k.cols.every((c) => /_by$/.test(c));
+      const fks = cons.filter((k) => k.contype === 'f' && inDom.has(k.tbl) && !isActorColumn(k));
+      const stubs = [...new Set(fks.map((k) => k.ref_tbl as string).filter((t) => !inDom.has(t)))];
+      const ents = [...dom.tables.map((t) => entity(t, false)), ...stubs.map((t) => `    ${t} {\n${cols.filter((c) => c.tbl === t && pkOf(t, c.col)).map((c) => `        ${mermaidType(c.type)} ${c.col} PK`).join('\n')}\n    }`)];
+      const lines = fks.map((k) => {
+        const nullable = k.cols.some((c: string) => !cols.find((x) => x.tbl === k.tbl && x.col === c)!.notnull);
+        return `    ${k.ref_tbl} ${nullable ? '|o' : '||'}--o{ ${k.tbl} : "${k.cols.join('+')}"`;
+      });
+      const code = `erDiagram\n${lines.join('\n')}\n${ents.join('\n')}\n`;
+      fs.writeFileSync(path.resolve(__dirname, `../docs/er_${i + 1}.mmd`), code);
+      domains += `## ER ${i + 1}. ${dom.title}\n\n${dom.text}\n\n\`\`\`mermaid\n${code}\`\`\`\n\n`;
+    }
+    fs.writeFileSync(path.resolve(__dirname, '../docs/er_domains.md'), domains);
     console.log(`Wrote docs/data_dictionary.md (${tables.length} tables), docs/er_diagram.mmd and docs/er_overview.mmd (${rels.length} relationships).`);
   } finally {
     await db.end();
