@@ -1,0 +1,17 @@
+# Optional: use this instead of a native Postgres/MongoDB install.
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: ${PG_SUPERUSER:-postgres}
+      POSTGRES_PASSWORD: ${PG_SUPERPASSWORD:?set PG_SUPERPASSWORD in .env}
+      POSTGRES_DB: projectpulse
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+  mongo:
+    image: mongo:7
+    ports: ["27017:27017"]
+    volumes: ["mongodata:/data/db"]
+volumes:
+  pgdata:
+  mongodata:
