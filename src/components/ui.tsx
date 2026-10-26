@@ -50,7 +50,7 @@ export function PageTitle({ title, subtitle, actions, eyebrow }: { title: string
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
       <div>
-        {eyebrow && <div className="mb-1 text-xs font-medium text-indigo-600">{eyebrow}</div>}
+        {eyebrow && <div className="mb-1 text-xs font-medium text-slate-500">{eyebrow}</div>}
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">{title}</h1>
         {subtitle && <p className="mt-1 max-w-3xl text-sm text-slate-600">{subtitle}</p>}
       </div>

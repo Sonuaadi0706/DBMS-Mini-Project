@@ -12,7 +12,7 @@ export default async function ProjectLayout({ children, params }: { children: Re
     <div>
       <div className="mb-1 flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
-          <div className="mb-1 text-xs font-medium text-indigo-600">Team {project.team_name} · {project.course_name}</div>
+          <div className="mb-1 text-xs font-medium text-slate-500">Team {project.team_name} · {project.course_name}</div>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">{project.title}</h1>
           <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-600">
             <StatusChip status={project.status} />{risk && <StatusChip status={risk.risk_level} />}

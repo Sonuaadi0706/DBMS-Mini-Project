@@ -35,8 +35,7 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 .text-gradient { color: rgb(var(--c-brand-600)); }
 
 /* ---- buttons -------------------------------------------------------------------------------------------- */
-:root.light { --btn-bg: rgb(var(--c-brand-700)); --btn-hover: rgb(var(--c-brand-800)); }
-:root.dark  { --btn-bg: rgb(var(--c-brand-500)); --btn-hover: rgb(var(--c-brand-600)); }
+:root { --btn-bg: rgb(var(--c-slate-900)); --btn-hover: rgb(var(--c-slate-700)); }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border-radius: .6rem; padding: .5rem 1rem;
   font-size: .875rem; font-weight: 600; line-height: 1.25rem; cursor: pointer; user-select: none;
@@ -55,7 +54,7 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 .chip i { width: .38rem; height: .38rem; border-radius: 9999px; background: currentColor; flex: none; }
 .chip-neutral { background: rgb(var(--c-slate-100)); color: rgb(var(--c-slate-600)); border-color: rgb(var(--c-slate-200)); }
 .chip-ok      { background: rgb(var(--c-green-100));  color: rgb(var(--c-green-700));  border-color: rgb(var(--c-green-200)); }
-.chip-info    { background: rgb(var(--c-blue-100));   color: rgb(var(--c-blue-700));   border-color: rgb(var(--c-blue-200)); }
+.chip-info    { background: rgb(var(--c-slate-200));  color: rgb(var(--c-slate-800));  border-color: rgb(var(--c-slate-300)); }
 .chip-warn    { background: rgb(var(--c-amber-100));  color: rgb(var(--c-amber-700));  border-color: rgb(var(--c-amber-200)); }
 .chip-hot     { background: rgb(var(--c-orange-100)); color: rgb(var(--c-orange-700)); border-color: rgb(var(--c-orange-200)); }
 .chip-bad     { background: rgb(var(--c-red-100));    color: rgb(var(--c-red-700));    border-color: rgb(var(--c-red-200)); }

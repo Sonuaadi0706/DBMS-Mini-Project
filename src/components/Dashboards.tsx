@@ -37,7 +37,7 @@ function Hero({ eyebrow, title, subtitle, level, actions }: { eyebrow: string; t
   return (
     <div className="relative mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-slate-200 pb-6">
       <div>
-        <div className="mb-1 text-xs font-medium text-indigo-600">{eyebrow}</div>
+        <div className="mb-1 text-xs font-medium text-slate-500">{eyebrow}</div>
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">{title}</h1>
         <p className="mt-1 text-sm text-slate-600">{subtitle}</p>
         {actions && <div className="mt-4 flex flex-wrap gap-2">{actions}</div>}
@@ -114,9 +114,9 @@ export async function GuideDashboard({ user }: { user: CurrentUser }) {
       <Section title={`Approval queue (${queueSize})`}>
         {queueSize === 0 ? <Empty>Nothing waiting for you.</Empty> : (
           <Card><ul className="divide-y text-sm">
-            {d.proposals.map((p) => (<li key={`p${p.project_id}`} className="flex items-center justify-between py-2"><span><span className="mr-2 rounded bg-blue-100 px-2 py-0.5 text-xs text-blue-800">Proposal</span><Link className="text-indigo-700 hover:underline" href={`/proposals/${p.project_id}`}>{p.title}</Link> <span className="text-xs text-slate-500">· {p.team_name}</span></span><span className="text-xs text-slate-500">submitted {fmt(p.submitted_at)}</span></li>))}
-            {d.milestones.map((m) => (<li key={`m${m.milestone_id}`} className="flex items-center justify-between py-2"><span><span className="mr-2 rounded bg-indigo-100 px-2 py-0.5 text-xs text-indigo-800">Milestone</span><Link className="text-indigo-700 hover:underline" href={`/projects/${m.project_id}/milestones`}>{m.title}</Link> <span className="text-xs text-slate-500">· {m.team_name}</span></span><span className="flex items-center gap-2 text-xs text-slate-500"><StatusChip status={m.status} />{fmt(m.submitted_at)}</span></li>))}
-            {d.evidence.map((e) => (<li key={`e${e.project_id}`} className="flex items-center justify-between py-2"><span><span className="mr-2 rounded bg-amber-100 px-2 py-0.5 text-xs text-amber-800">Evidence</span><Link className="text-indigo-700 hover:underline" href={`/projects/${e.project_id}/evidence`}>{e.team_name}</Link></span><span className="text-xs text-slate-500">{e.waiting} item(s) to verify</span></li>))}
+            {d.proposals.map((p) => (<li key={`p${p.project_id}`} className="flex items-center justify-between py-2"><span><span className="mr-2 rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-700">Proposal</span><Link className="text-indigo-700 hover:underline" href={`/proposals/${p.project_id}`}>{p.title}</Link> <span className="text-xs text-slate-500">· {p.team_name}</span></span><span className="text-xs text-slate-500">submitted {fmt(p.submitted_at)}</span></li>))}
+            {d.milestones.map((m) => (<li key={`m${m.milestone_id}`} className="flex items-center justify-between py-2"><span><span className="mr-2 rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-700">Milestone</span><Link className="text-indigo-700 hover:underline" href={`/projects/${m.project_id}/milestones`}>{m.title}</Link> <span className="text-xs text-slate-500">· {m.team_name}</span></span><span className="flex items-center gap-2 text-xs text-slate-500"><StatusChip status={m.status} />{fmt(m.submitted_at)}</span></li>))}
+            {d.evidence.map((e) => (<li key={`e${e.project_id}`} className="flex items-center justify-between py-2"><span><span className="mr-2 rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-700">Evidence</span><Link className="text-indigo-700 hover:underline" href={`/projects/${e.project_id}/evidence`}>{e.team_name}</Link></span><span className="text-xs text-slate-500">{e.waiting} item(s) to verify</span></li>))}
           </ul></Card>
         )}
       </Section>

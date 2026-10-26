@@ -13,7 +13,7 @@ ProjectPulse helps students, faculty guides, reviewers and administrators manage
 - **Evidence and fairness**: contribution evidence (only verified evidence counts), peer evaluation, a contribution view.
 - **Risk monitoring**: explainable score with six factors, history and trend, overdue triggers, sweep job.
 - **Originality**: semantic similarity (pgvector) flags possible overlap for faculty review; a student "Check originality" hint reveals nothing about other teams.
-- **Interface**: clean dark and light themes, a heartbeat motif that follows risk, animated gauge and counters, sidebar shell with a `⌘K` command palette, responsive down to phone width.
+- **Interface**: clean black-and-white dark and light themes, a heartbeat motif that follows risk, animated gauge and counters, sidebar shell with a `⌘K` command palette, responsive down to phone width.
 - **Dashboards and reports** for the four roles, filters, CSV export, MongoDB document insights, audit log, administration area.
 
 ## Tech stack

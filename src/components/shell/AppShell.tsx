@@ -79,7 +79,7 @@ export function AppShell({ name, roles, activeRole, links, children }: {
           </select>
         )}
         <div className="flex items-center gap-3 px-1">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-500/15 text-xs font-semibold text-indigo-700">{initials(name)}</div>
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-200 text-xs font-semibold text-slate-700">{initials(name)}</div>
           <div className="min-w-0 flex-1">
             <div className="truncate text-sm font-medium text-slate-900">{name}</div>
             <div className="text-xs text-slate-500">{ROLE_LABEL[activeRole] ?? activeRole}</div>

@@ -3,7 +3,7 @@
 import { useEffect, useId, useState } from 'react';
 import { CountUp } from './CountUp';
 
-const COLOR: Record<string, string> = { low: '--c-green-500', moderate: '--c-amber-500', high: '--c-orange-500', critical: '--c-red-500' };
+const COLOR: Record<string, string> = { low: '--c-slate-900', moderate: '--c-amber-500', high: '--c-orange-500', critical: '--c-red-500' };
 
 /** 270-degree gauge for a 0-100 score. The arc sweeps in on load; its colour is the risk level. */
 export function RadialGauge({ value, level, size = 190, children }: { value: number; level: string; size?: number; children?: React.ReactNode }) {
@@ -12,7 +12,7 @@ export function RadialGauge({ value, level, size = 190, children }: { value: num
   useEffect(() => { const t = requestAnimationFrame(() => setOn(true)); return () => cancelAnimationFrame(t); }, []);
   const stroke = 14, r = (size - stroke) / 2 - 4, c = 2 * Math.PI * r, arc = c * 0.75;
   const pct = Math.max(0, Math.min(100, value)) / 100;
-  const color = `rgb(var(${COLOR[level] ?? '--c-brand-500'}))`;
+  const color = `rgb(var(${COLOR[level] ?? '--c-slate-900'}))`;
   const tick = (p: number) => {                       // tick marks at 25 / 50 / 75 (the level boundaries)
     const ang = (135 + 270 * p) * (Math.PI / 180), cx = size / 2, cy = size / 2;
     const f = (n: number) => Number(n.toFixed(2));   // rounded so server and browser print identical attributes

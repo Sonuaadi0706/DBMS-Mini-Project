@@ -3,8 +3,8 @@
 export type PulseLevel = 'idle' | 'low' | 'moderate' | 'high' | 'critical';
 
 const LOOK: Record<PulseLevel, { color: string; amp: number; seconds: number; irregular: 0 | 1 | 2 }> = {
-  idle:     { color: 'var(--c-brand-500)',  amp: 0.55, seconds: 6.5, irregular: 0 },
-  low:      { color: 'var(--c-green-500)',  amp: 0.55, seconds: 6,   irregular: 0 },
+  idle:     { color: 'var(--c-slate-500)',  amp: 0.55, seconds: 6.5, irregular: 0 },
+  low:      { color: 'var(--c-slate-900)',  amp: 0.55, seconds: 6,   irregular: 0 },
   moderate: { color: 'var(--c-amber-500)',  amp: 0.7,  seconds: 4,   irregular: 0 },
   high:     { color: 'var(--c-orange-500)', amp: 0.9,  seconds: 2.6, irregular: 1 },
   critical: { color: 'var(--c-red-500)',    amp: 1,    seconds: 1.5, irregular: 2 },

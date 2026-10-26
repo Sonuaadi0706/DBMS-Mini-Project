@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: { default: 'ProjectPulse', template: '%s · ProjectPulse' },
   description: 'Academic project governance, originality and milestone risk monitor',
 };
-export const viewport: Viewport = { themeColor: '#0d0f14', colorScheme: 'dark light' };
+export const viewport: Viewport = { themeColor: '#09090b', colorScheme: 'dark light' };
 
 // Runs before the page paints, so there is never a flash of the wrong theme. Dark is the default.
 const THEME_SCRIPT = `try{var t=localStorage.getItem('pp-theme')||'dark';if(t==='system')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var d=document.documentElement;d.classList.remove('dark','light');d.classList.add(t==='light'?'light':'dark')}catch(e){}`;

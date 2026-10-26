@@ -99,16 +99,16 @@ export default function LoginPage() {
       <div className="absolute right-4 top-4 z-10"><ThemeToggle /></div>
 
       <section className="relative hidden flex-col justify-between overflow-hidden border-r border-slate-200 bg-surface p-12 lg:flex">
-        <div className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(ellipse 70% 50% at 20% 0%, rgb(var(--c-brand-500) / .10), transparent 70%), radial-gradient(ellipse 60% 40% at 100% 100%, rgb(var(--c-brand-500) / .06), transparent 70%)' }} />
+        <div className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(ellipse 70% 50% at 20% 0%, rgb(var(--c-slate-900) / .05), transparent 70%), radial-gradient(ellipse 60% 40% at 100% 100%, rgb(var(--c-slate-900) / .03), transparent 70%)' }} />
         <div className="relative"><Logo size={34} /></div>
         <div className="relative max-w-lg">
           <div className="-ml-2 mb-8"><Pulse level="low" width={420} height={64} /></div>
-          <h1 className="text-4xl font-semibold leading-tight tracking-tight text-slate-900 xl:text-5xl">See project trouble<br /><span className="text-indigo-600">before it becomes failure.</span></h1>
+          <h1 className="text-4xl font-semibold leading-tight tracking-tight text-slate-900 xl:text-5xl">See project trouble<br /><span className="text-slate-400">before it becomes failure.</span></h1>
           <p className="mt-4 text-base text-slate-600">One place for proposals, milestones, contribution and risk, so faculty can step in while there is still time to fix things.</p>
           <ul className="mt-10 space-y-5">
             {POINTS.map((p) => (
               <li key={p.title} className="flex gap-4">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600"><Icon name={p.icon} className="h-[18px] w-[18px]" /></span>
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-700"><Icon name={p.icon} className="h-[18px] w-[18px]" /></span>
                 <div><div className="text-sm font-medium text-slate-900">{p.title}</div><div className="text-sm text-slate-500">{p.text}</div></div>
               </li>
             ))}
