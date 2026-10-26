@@ -8,7 +8,7 @@ export interface SeedUser { email: string; name: string; roles: string[]; identi
 /** ~20 demo users (spec 17.1). guide3 also holds `reviewer` to show a multi-role user. */
 export function demoUsers(): SeedUser[] {
   const u: SeedUser[] = [{ email: 'admin@projectpulse.test', name: 'Asha Admin', roles: ['admin'], identifier: 'EMP-ADM-01' }];
-  const guides = ['Pavan AC', 'Prof. Meera Rao', 'Prof. Kiran Shetty'];
+  const guides = ['Pavan AC', 'Prof. Meera Rao', 'Prof. Kiran Shetty', 'Prof. Suresh Nayak'];   // guide4 has no projects yet
   guides.forEach((name, i) => u.push({
     email: `guide${i + 1}@projectpulse.test`, name,
     roles: i === 2 ? ['faculty_guide', 'reviewer'] : ['faculty_guide'], identifier: `EMP-FAC-0${i + 1}`,
@@ -17,7 +17,9 @@ export function demoUsers(): SeedUser[] {
     email: `reviewer${i + 1}@projectpulse.test`, name, roles: ['reviewer'], identifier: `EMP-REV-0${i + 1}`,
   }));
   const students = ['Aadish', 'Chiranthan', 'Riya Nair', 'Karthik B', 'Sneha Hegde', 'Rohan D', 'Divya S',
-    'Manoj K', 'Pooja R', 'Vikram T', 'Ananya M', 'Harsh P', 'Isha G', 'Tarun V'];
+    'Manoj K', 'Pooja R', 'Vikram T', 'Ananya M', 'Harsh P', 'Isha G', 'Tarun V',
+    // student15-20 are in no team, so the whole student journey (team, proposal, plan, submission) can be tried from scratch
+    'Nikhil R', 'Meghana S', 'Arjun K', 'Keerthi N', 'Pranav H', 'Suraj M'];
   students.forEach((name, i) => u.push({
     email: `student${String(i + 1).padStart(2, '0')}@projectpulse.test`, name,
     roles: ['student'], identifier: `1XX23CS${String(i + 1).padStart(3, '0')}`,

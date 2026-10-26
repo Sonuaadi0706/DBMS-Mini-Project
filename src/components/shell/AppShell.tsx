@@ -54,6 +54,7 @@ export function AppShell({ name, roles, activeRole, links, children }: {
   const items: PaletteItem[] = [
     ...links.map((l) => ({ id: l.href, label: l.label, hint: 'Go to', icon: l.icon, run: () => router.push(l.href) })),
     ...roles.filter((r) => r !== activeRole).map((r) => ({ id: `role-${r}`, label: `Switch to ${ROLE_LABEL[r] ?? r}`, hint: 'Role', icon: 'users' as IconName, run: () => switchRole(r) })),
+    { id: 'account', label: 'Account and password', hint: 'Account', icon: 'lock', run: () => router.push('/account') },
     { id: 'theme', label: 'Toggle light / dark theme', hint: 'Appearance', icon: 'sun', run: () => document.querySelector<HTMLButtonElement>('[data-theme-toggle] button')?.click() },
     { id: 'logout', label: 'Sign out', hint: 'Account', icon: 'logout', run: logout },
   ];
@@ -79,12 +80,14 @@ export function AppShell({ name, roles, activeRole, links, children }: {
             {roles.map((r) => <option key={r} value={r}>{ROLE_LABEL[r] ?? r}</option>)}
           </select>
         )}
-        <div className="flex items-center gap-3 px-1">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-200 text-xs font-semibold text-slate-700">{initials(name)}</div>
-          <div className="min-w-0 flex-1">
-            <div className="truncate text-sm font-medium text-slate-900">{name}</div>
-            <div className="text-xs text-slate-500">{ROLE_LABEL[activeRole] ?? activeRole}</div>
-          </div>
+        <div className="flex items-center gap-1 px-1">
+          <Link href="/account" title="Account and password" className="flex min-w-0 flex-1 items-center gap-3 rounded-lg p-1 transition-colors hover:bg-slate-200/50">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-200 text-xs font-semibold text-slate-700">{initials(name)}</div>
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-sm font-medium text-slate-900">{name}</div>
+              <div className="text-xs text-slate-500">{ROLE_LABEL[activeRole] ?? activeRole}</div>
+            </div>
+          </Link>
           <button onClick={logout} aria-label="Sign out" title="Sign out" className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-200/60 hover:text-slate-900"><Icon name="logout" className="h-[18px] w-[18px]" /></button>
         </div>
       </div>

@@ -13,7 +13,7 @@ export const viewport: Viewport = { themeColor: '#09090b', colorScheme: 'dark li
 
 // Runs before the page paints, so there is never a flash of the wrong theme. The login page is always light; every other
 // page uses the saved choice and defaults to dark.
-const THEME_SCRIPT = `try{var t=location.pathname.indexOf('/login')===0?'light':(localStorage.getItem('pp-theme')||'dark');var d=document.documentElement;d.classList.remove('dark','light');d.classList.add(t==='light'?'light':'dark')}catch(e){}`;
+const THEME_SCRIPT = `try{var t=/^\/(login|register)/.test(location.pathname)?'light':(localStorage.getItem('pp-theme')||'dark');var d=document.documentElement;d.classList.remove('dark','light');d.classList.add(t==='light'?'light':'dark')}catch(e){}`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

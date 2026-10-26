@@ -89,9 +89,24 @@ All use the password you set as `SEED_DEFAULT_PASSWORD`.
 | Admin | `admin@projectpulse.test` |
 | Faculty guides | `guide1@` (Pavan AC), `guide2@`, `guide3@projectpulse.test` (guide3 is also a reviewer: use the role switcher) |
 | Reviewers | `reviewer1@`, `reviewer2@projectpulse.test` |
-| Students | `student01@` (Aadish) to `student14@projectpulse.test` |
+| Students in a team | `student01@` (Aadish) to `student14@projectpulse.test` |
+| Students with no team yet | `student15@` to `student20@projectpulse.test`, or create your own at `/register` |
+| Guide with no projects | `guide4@projectpulse.test` (Prof. Suresh Nayak) |
 
 Six demo teams show different situations: **Alpha** healthy (student01 to 03, guide1), **Bravo** delayed and high risk (student04, 05, guide2), **Charlie** unequal contribution (student06 to 08, guide1), **Delta** unresolved feedback and a missing test report (student09, 10, guide2), **Echo** a near-duplicate of Alpha awaiting similarity review (student11, 12, guide1), **Foxtrot** a similar topic in another course, revision requested (student13, 14, guide3).
+
+### Try the whole workflow from scratch
+
+Use the free accounts so nothing is pre-filled. The same journey is checked end to end through the interface.
+
+1. **Student** (`student15`): Teams, create a team and add `student16`; Proposals, New proposal, then Save and submit.
+2. **Admin**: Admin, Allocations, give the new project a guide (`guide4`) and a reviewer (`reviewer1`).
+3. **Guide** (`guide4`): open the proposal and approve it (or ask for a revision).
+4. **Student**: Milestones, create them from a template and start the first; Task board, add tasks and mark them done; Deliverables, add a file and submit the milestone.
+5. **Guide**: Milestones, start the review and approve; verify tasks and evidence. **Reviewer**: Feedback, fill the rubric and add feedback items.
+6. **Student**: answer and resolve the feedback; rate teammates under Contribution. **Guide**: verify the fix, recalculate the risk.
+7. A second new team that submits a similar idea appears under **Similarity** for faculty review.
+8. **Admin** can add users, departments, courses and templates; anyone can change their password under **Account**.
 
 ## Tests
 

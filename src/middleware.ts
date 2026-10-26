@@ -1,9 +1,9 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { SESSION_COOKIE, verifySession } from '@/lib/auth/token';
 
-// Everything is protected except the login page and the login endpoint.
+// Everything is protected except the login / sign-up pages and their endpoints.
 // Role and ownership checks happen again inside each Route Handler; this only gates anonymous users.
-const PUBLIC = ['/login', '/api/auth/login'];
+const PUBLIC = ['/login', '/register', '/api/auth/login', '/api/auth/register'];
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;

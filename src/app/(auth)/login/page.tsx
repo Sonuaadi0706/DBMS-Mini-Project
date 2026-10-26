@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { Suspense, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Icon } from '@/components/icons';
@@ -123,6 +124,7 @@ export default function LoginPage() {
           <h2 className="text-2xl font-semibold tracking-tight text-slate-900">Sign in</h2>
           <p className="mb-8 mt-1 text-sm text-slate-500">Use your college account to continue.</p>
           <Suspense><LoginForm /></Suspense>
+          <p className="mt-6 text-center text-sm text-slate-500">New student? <Link href="/register" className="font-medium text-slate-900 underline">Create an account</Link></p>
         </div>
       </section>
     </main>
