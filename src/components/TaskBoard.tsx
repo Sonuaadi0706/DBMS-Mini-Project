@@ -42,7 +42,7 @@ function TaskCard({ t, people, isMember, isGuide }: { t: BoardTask; people: Pers
   const locked = t.status === 'verified';
 
   return (
-    <div className={`rounded-md border bg-white p-3 text-sm shadow-sm ${t.is_overdue ? 'border-red-300' : ''}`}>
+    <div className={`card-surface interactive p-3 text-sm ${t.is_overdue ? "!border-red-400/60" : ""}`}>
       <div className="flex items-start gap-2">
         <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${PRIORITY_DOT[t.priority]}`} title={`${t.priority} priority`} />
         <button className="text-left font-medium hover:text-indigo-700" onClick={() => setOpen(!open)}>{t.title}</button>
@@ -179,7 +179,7 @@ export function TaskBoard({ tasks, milestones, people, isMember, isGuide, canPla
         {COLUMNS.map((col) => {
           const items = shown.filter((t) => t.status === col);
           return (
-            <section key={col} className="rounded-lg bg-slate-100 p-2" aria-label={label(col)}>
+            <section key={col} className="rounded-2xl border border-slate-200 bg-slate-100/60 p-2.5" aria-label={label(col)}>
               <h3 className="mb-2 flex items-center justify-between px-1 text-xs font-semibold uppercase text-slate-600">{label(col)} <span className="rounded-full bg-white px-2 py-0.5 text-slate-500">{items.length}</span></h3>
               <div className="space-y-2">
                 {items.map((t) => <TaskCard key={t.task_id} t={t} people={people} isMember={isMember} isGuide={isGuide} />)}

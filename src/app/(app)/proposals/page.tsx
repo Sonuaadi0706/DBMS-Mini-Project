@@ -16,9 +16,9 @@ export default async function ProposalsPage({ searchParams }: { searchParams: Pr
       <PageTitle title="Proposals" subtitle="Project proposals and their review status."
         actions={isStudent ? <ButtonLink href="/proposals/new" primary>New proposal</ButtonLink> : undefined} />
       <div className="mb-3 flex flex-wrap gap-2 text-sm">
-        <Link href="/proposals" className={`rounded-full border px-3 py-1 ${!active ? 'bg-indigo-600 text-white' : 'bg-white'}`}>All</Link>
+        <Link href="/proposals" className={`rounded-full border px-3 py-1 ${!active ? 'bg-indigo-600 text-onbrand' : 'bg-white'}`}>All</Link>
         {STATUSES.map((s) => (
-          <Link key={s} href={`/proposals?status=${s}`} className={`rounded-full border px-3 py-1 ${active === s ? 'bg-indigo-600 text-white' : 'bg-white'}`}>{label(s)}</Link>
+          <Link key={s} href={`/proposals?status=${s}`} className={`rounded-full border px-3 py-1 ${active === s ? 'bg-indigo-600 text-onbrand' : 'bg-white'}`}>{label(s)}</Link>
         ))}
       </div>
       {rows.length === 0 ? <Empty>No proposals match.</Empty> : (

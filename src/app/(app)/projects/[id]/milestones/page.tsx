@@ -23,7 +23,7 @@ function Timeline({ milestones, start }: { milestones: MilestoneRow[]; start: st
         <div className="absolute -top-2 h-5 w-0.5 bg-red-500" style={{ left: pos(today) }} title="Today"><span className="absolute -top-4 -translate-x-1/2 text-[10px] text-red-600">today</span></div>
         {milestones.map((m) => (
           <div key={m.milestone_id} className="absolute -top-1.5" style={{ left: pos(dayNum(m.due_date)) }}>
-            <div className={`h-4 w-4 -translate-x-1/2 rounded-full border-2 border-white ${DOT[m.status] ?? 'bg-slate-400'}`} title={`${m.title}: ${fmt(m.due_date)} (${label(m.status)})`} />
+            <div className={`h-4 w-4 -translate-x-1/2 rounded-full border-2 border-slate-50 ${DOT[m.status] ?? 'bg-slate-400'}`} title={`${m.title}: ${fmt(m.due_date)} (${label(m.status)})`} />
             <div className="absolute top-5 -translate-x-1/2 whitespace-nowrap text-[10px] text-slate-600">M{m.sequence_no}</div>
           </div>
         ))}

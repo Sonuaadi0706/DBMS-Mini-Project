@@ -13,6 +13,7 @@ ProjectPulse helps students, faculty guides, reviewers and administrators manage
 - **Evidence and fairness**: contribution evidence (only verified evidence counts), peer evaluation, a contribution view.
 - **Risk monitoring**: explainable score with six factors, history and trend, overdue triggers, sweep job.
 - **Originality**: semantic similarity (pgvector) flags possible overlap for faculty review; a student "Check originality" hint reveals nothing about other teams.
+- **Interface**: dark and light themes, live heartbeat motif that follows risk, animated gauges and counters, sidebar shell with a `⌘K` command palette, responsive down to phone width.
 - **Dashboards and reports** for the four roles, filters, CSV export, MongoDB document insights, audit log, administration area.
 
 ## Tech stack
@@ -41,7 +42,7 @@ flowchart LR
 - Node.js 20 or newer (developed on 24) and npm
 - PostgreSQL 16 or newer **with the `pgvector` extension**, and MongoDB 7. Either install them natively
   (macOS: `brew install postgresql@18 pgvector mongodb-community@7.0`) or use Docker: `npm run db:up` (set `PG_SUPERPASSWORD` in `.env`)
-- Internet access once, to download the ~25 MB embedding model on first use
+- Internet access once, to download the ~25 MB embedding model on first use and the web fonts (`next/font`) on the first dev run or build
 - Git
 
 ## Setup

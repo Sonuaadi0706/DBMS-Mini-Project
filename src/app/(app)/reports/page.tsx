@@ -54,7 +54,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
       <PageTitle title="Reports" subtitle={isAdmin ? 'All projects.' : 'Projects allocated to you.'} />
       <nav className="flex flex-wrap gap-2 text-sm">
         {(Object.keys(REPORTS) as ReportName[]).map((n) => (
-          <Link key={n} href={`/reports?report=${n}`} className={`rounded-full border px-3 py-1 ${n === name ? 'bg-indigo-600 text-white' : 'bg-white hover:bg-slate-50'}`}>{REPORTS[n]}</Link>
+          <Link key={n} href={`/reports?report=${n}`} className={`rounded-full border px-3 py-1 ${n === name ? 'bg-indigo-600 text-onbrand' : 'bg-white hover:bg-slate-50'}`}>{REPORTS[n]}</Link>
         ))}
       </nav>
 

@@ -5,39 +5,76 @@ import { latestSnapshot } from '@/lib/risk';
 import { contributionFor } from '@/lib/data/contribution';
 import { adminDashboard, guideDashboard, reviewerDashboard, studentOverview, type DashProject } from '@/lib/data/dashboard';
 import { Card, Empty, PageTitle, ProgressBar, StatusChip, dueLabel, fmt, label } from './ui';
-import { LEVEL_COLOR } from './RiskViews';
+import { LEVEL_COLOR, levelRgb } from './RiskViews';
+import { CountUp } from './viz/CountUp';
+import { RadialGauge } from './viz/RadialGauge';
+import { Pulse, pulseLevel } from './viz/Pulse';
+import { Icon, type IconName } from './icons';
 import { RunSweepButton } from './RiskActions';
 
 const LEVELS = ['low', 'moderate', 'high', 'critical'] as const;
 
-function Stat({ value, caption, tone }: { value: number | string; caption: string; tone?: string }) {
-  return (<div className="rounded-lg border bg-white p-4"><div className={`text-3xl font-semibold tabular-nums ${tone ?? ''}`}>{value}</div><div className="text-xs text-slate-500">{caption}</div></div>);
+function Stat({ value, caption, tone, icon = 'target' }: { value: number | string; caption: string; tone?: string; icon?: IconName }) {
+  return (
+    <Card interactive className="p-4">
+      <div className="flex items-start justify-between">
+        <div className={`num font-display text-3xl font-semibold ${tone ?? 'text-slate-900'}`}>{typeof value === 'number' ? <CountUp value={value} /> : value}</div>
+        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600"><Icon name={icon} className="h-4 w-4" /></span>
+      </div>
+      <div className="mt-1 text-xs text-slate-500">{caption}</div>
+    </Card>
+  );
+}
+
+/** Worst level among the projects (drives the heartbeat in the hero). */
+function worstLevel(projects: { risk_level: string | null }[]): string {
+  for (const l of ['critical', 'high', 'moderate', 'low']) if (projects.some((p) => p.risk_level === l)) return l;
+  return 'idle';
+}
+
+/** Page header with a live heartbeat whose rhythm follows the portfolio's worst risk level. */
+function Hero({ eyebrow, title, subtitle, level, actions }: { eyebrow: string; title: string; subtitle: React.ReactNode; level: string; actions?: React.ReactNode }) {
+  return (
+    <div className="card-surface relative mb-6 overflow-hidden p-6 sm:p-8">
+      <div className="pointer-events-none absolute -right-10 top-1/2 hidden -translate-y-1/2 opacity-90 md:block"><Pulse level={pulseLevel(level)} width={520} height={110} glow /></div>
+      <div className="relative max-w-xl">
+        <div className="mb-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-indigo-600">{eyebrow}</div>
+        <h1 className="font-display text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">{title}</h1>
+        <p className="mt-2 text-sm text-slate-600">{subtitle}</p>
+        {actions && <div className="mt-4 flex flex-wrap gap-2">{actions}</div>}
+      </div>
+    </div>
+  );
 }
 
 /** Four cards, one per risk level, with how many projects sit in each. */
 function RiskCards({ projects }: { projects: { risk_level: string | null }[] }) {
   const n = (l: string) => projects.filter((p) => p.risk_level === l).length;
   return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+    <div className="stagger grid grid-cols-2 gap-3 md:grid-cols-4">
       {LEVELS.map((l) => (
-        <div key={l} className="rounded-lg border bg-white p-4" style={{ borderLeft: `4px solid ${LEVEL_COLOR[l]}` }}>
-          <div className="text-3xl font-semibold tabular-nums">{n(l)}</div><div className="text-xs text-slate-500">{label(l)} risk</div>
-        </div>
+        <Card key={l} interactive className="relative overflow-hidden p-4">
+          <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: `linear-gradient(90deg, ${levelRgb(l)}, transparent)` }} />
+          <div className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full blur-2xl" style={{ background: levelRgb(l, n(l) ? 0.25 : 0.06) }} />
+          <div className="num relative font-display text-4xl font-semibold text-slate-900"><CountUp value={n(l)} /></div>
+          <div className="relative mt-0.5 flex items-center gap-2 text-xs text-slate-500"><span className="h-2 w-2 rounded-full" style={{ background: levelRgb(l), boxShadow: `0 0 8px ${levelRgb(l)}` }} />{label(l)} risk</div>
+          <Pulse level={l} width={140} height={22} className="relative mt-2 opacity-80" />
+        </Card>
       ))}
     </div>
   );
 }
 
 const Section = ({ title, children, right }: { title: string; children: React.ReactNode; right?: React.ReactNode }) => (
-  <section><div className="mb-2 flex items-center justify-between"><h2 className="text-lg font-semibold">{title}</h2>{right}</div>{children}</section>
+  <section><div className="mb-3 flex items-center justify-between"><h2 className="flex items-center gap-2 font-display text-lg font-semibold text-slate-900"><span className="h-4 w-1 rounded-full bg-indigo-500" />{title}</h2>{right}</div>{children}</section>
 );
 
 function ProjectRiskTable({ rows }: { rows: DashProject[] }) {
   if (rows.length === 0) return <Empty>No running projects.</Empty>;
   return (
-    <div className="overflow-x-auto rounded-lg border bg-white">
+    <div className="card-surface overflow-x-auto">
       <table className="w-full text-left text-sm">
-        <thead className="border-b bg-slate-50 text-xs uppercase text-slate-500"><tr><th className="p-2">Team</th><th className="p-2">Progress</th><th className="p-2">Overdue tasks</th><th className="p-2">Missing docs</th><th className="p-2">Open feedback</th><th className="p-2">Next deadline</th><th className="p-2">Risk</th></tr></thead>
+        <thead className="border-b text-xs uppercase text-slate-500"><tr><th className="p-2">Team</th><th className="p-2">Progress</th><th className="p-2">Overdue tasks</th><th className="p-2">Missing docs</th><th className="p-2">Open feedback</th><th className="p-2">Next deadline</th><th className="p-2">Risk</th></tr></thead>
         <tbody>{rows.map((r) => {
           const d = r.days_to_next_deadline === null ? null : dueLabel(r.days_to_next_deadline);
           return (
@@ -64,7 +101,7 @@ export async function GuideDashboard({ user }: { user: CurrentUser }) {
   const queueSize = d.proposals.length + d.milestones.length + d.evidence.length;
   return (
     <div className="space-y-6">
-      <PageTitle title="Faculty dashboard" subtitle={`Welcome, ${user.name}. Projects where you are the guide.`} />
+      <Hero eyebrow="Faculty guide" title="Faculty dashboard" subtitle={`Welcome, ${user.name}. Projects where you are the guide.`} level={worstLevel(d.projects)} />
       <RiskCards projects={d.projects} />
       {high.length > 0 && (
         <Section title="Needs attention now">
@@ -109,12 +146,12 @@ export async function ReviewerDashboard({ user }: { user: CurrentUser }) {
   const d = await reviewerDashboard(user.userId);
   return (
     <div className="space-y-6">
-      <PageTitle title="Reviewer dashboard" subtitle={`Welcome, ${user.name}. Submissions allocated to you for review.`} />
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3"><Stat value={d.pending.length} caption="reviews waiting" tone={d.pending.length ? 'text-indigo-700' : ''} /><Stat value={d.decided} caption="reviews completed" /><Stat value={d.projects.length} caption="projects allocated" /></div>
+      <Hero eyebrow="Reviewer" title="Reviewer dashboard" subtitle={`Welcome, ${user.name}. Submissions allocated to you for review.`} level={d.pending.length ? 'moderate' : 'low'} />
+      <div className="stagger grid grid-cols-2 gap-3 md:grid-cols-3"><Stat icon="clock" value={d.pending.length} caption="reviews waiting" tone={d.pending.length ? 'text-indigo-700' : ''} /><Stat icon="check" value={d.decided} caption="reviews completed" /><Stat icon="project" value={d.projects.length} caption="projects allocated" /></div>
       <Section title="Waiting for your review">
         {d.pending.length === 0 ? <Empty>No pending reviews.</Empty> : (
-          <div className="overflow-x-auto rounded-lg border bg-white"><table className="w-full text-left text-sm">
-            <thead className="border-b bg-slate-50 text-xs uppercase text-slate-500"><tr><th className="p-2">Team</th><th className="p-2">Milestone</th><th className="p-2">Status</th><th className="p-2">Submitted</th><th className="p-2">Due</th><th className="p-2" /></tr></thead>
+          <div className="card-surface overflow-x-auto"><table className="w-full text-left text-sm">
+            <thead className="border-b text-xs uppercase text-slate-500"><tr><th className="p-2">Team</th><th className="p-2">Milestone</th><th className="p-2">Status</th><th className="p-2">Submitted</th><th className="p-2">Due</th><th className="p-2" /></tr></thead>
             <tbody>{d.pending.map((r) => (
               <tr key={r.review_id} className="border-b last:border-0"><td className="p-2">{r.team_name}</td><td className="p-2">M{r.sequence_no} {r.milestone_title}</td><td className="p-2"><StatusChip status={r.milestone_status} /></td><td className="p-2">{fmt(r.submitted_at)}</td><td className="p-2">{fmt(r.due_date)}</td>
                 <td className="p-2 text-right"><Link className="text-indigo-700 underline" href={`/projects/${r.project_id}/deliverables`}>Deliverables</Link> · <Link className="text-indigo-700 underline" href={`/projects/${r.project_id}/feedback`}>Review</Link></td></tr>))}</tbody>
@@ -140,18 +177,18 @@ export async function AdminDashboard({ user }: { user: CurrentUser }) {
   const proj = (s: string) => d.projects.find((p) => p.status === s)?.n ?? 0;
   return (
     <div className="space-y-6">
-      <PageTitle title="Admin console" subtitle={`Welcome, ${user.name}. System-wide view.`} actions={<RunSweepButton />} />
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-6">
-        <Stat value={role('student')} caption="students" /><Stat value={role('faculty_guide')} caption="guides" /><Stat value={role('reviewer')} caption="reviewers" />
-        <Stat value={d.counts.teams} caption="teams" /><Stat value={proj('in_progress')} caption="projects running" /><Stat value={proj('submitted')} caption="proposals awaiting a decision" tone={proj('submitted') ? 'text-indigo-700' : ''} />
-        <Stat value={d.counts.overdue_milestones} caption="overdue milestones" tone={d.counts.overdue_milestones ? 'text-red-600' : ''} /><Stat value={d.counts.open_feedback} caption="unresolved feedback" /><Stat value={d.counts.pending_evidence} caption="evidence waiting to be verified" />
-        <Stat value={d.counts.open_events} caption="open risk events" /><Stat value={d.noGuide.length} caption="projects without a guide" tone={d.noGuide.length ? 'text-red-600' : ''} /><Stat value={d.unassessed} caption="projects not yet assessed" />
+      <Hero eyebrow="Administrator" title="Admin console" subtitle={`Welcome, ${user.name}. System-wide view.`} level={d.noGuide.length || d.counts.overdue_milestones ? 'moderate' : 'low'} actions={<RunSweepButton />} />
+      <div className="stagger grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-6">
+        <Stat icon="users" value={role('student')} caption="students" /><Stat icon="shield" value={role('faculty_guide')} caption="guides" /><Stat icon="eye" value={role('reviewer')} caption="reviewers" />
+        <Stat icon="teams" value={d.counts.teams} caption="teams" /><Stat icon="pulse" value={proj('in_progress')} caption="projects running" /><Stat icon="proposals" value={proj('submitted')} caption="proposals awaiting a decision" tone={proj('submitted') ? 'text-indigo-700' : ''} />
+        <Stat icon="alert" value={d.counts.overdue_milestones} caption="overdue milestones" tone={d.counts.overdue_milestones ? 'text-red-600' : ''} /><Stat icon="layers" value={d.counts.open_feedback} caption="unresolved feedback" /><Stat icon="check" value={d.counts.pending_evidence} caption="evidence waiting to be verified" />
+        <Stat icon="alert" value={d.counts.open_events} caption="open risk events" /><Stat icon="shield" value={d.noGuide.length} caption="projects without a guide" tone={d.noGuide.length ? 'text-red-600' : ''} /><Stat icon="target" value={d.unassessed} caption="projects not yet assessed" />
       </div>
       <Section title="Risk by course">
         {courses.length === 0 ? <Empty>No running projects.</Empty> : (
-          <div className="overflow-x-auto rounded-lg border bg-white"><table className="w-full text-center text-sm">
-            <thead className="border-b bg-slate-50 text-xs uppercase text-slate-500"><tr><th className="p-2 text-left">Course</th>{cols.map((c) => <th key={c} className="p-2">{label(c)}</th>)}</tr></thead>
-            <tbody>{courses.map((c) => (<tr key={c} className="border-b last:border-0"><td className="p-2 text-left font-medium">{c}</td>{cols.map((l) => { const n = cell(c, l); const color = l === 'unassessed' ? '#64748b' : LEVEL_COLOR[l as keyof typeof LEVEL_COLOR]; return <td key={l} className="p-2"><span className="inline-block min-w-8 rounded px-2 py-1 font-semibold tabular-nums" style={n ? { background: `${color}26`, color } : { color: '#cbd5e1' }}>{n}</span></td>; })}</tr>))}</tbody>
+          <div className="card-surface overflow-x-auto"><table className="w-full text-center text-sm">
+            <thead className="border-b text-xs uppercase text-slate-500"><tr><th className="p-2 text-left">Course</th>{cols.map((c) => <th key={c} className="p-2">{label(c)}</th>)}</tr></thead>
+            <tbody>{courses.map((c) => (<tr key={c} className="border-b last:border-0"><td className="p-2 text-left font-medium">{c}</td>{cols.map((l) => { const n = cell(c, l); const bg = l === 'unassessed' ? 'rgb(var(--c-slate-500) / .18)' : levelRgb(l, 0.18); const color = l === 'unassessed' ? 'rgb(var(--c-slate-500))' : levelRgb(l); return <td key={l} className="p-2"><span className="num inline-block min-w-9 rounded-lg px-2 py-1 font-semibold" style={n ? { background: bg, color } : { color: 'rgb(var(--c-slate-300))' }}>{n}</span></td>; })}</tr>))}</tbody>
           </table></div>
         )}
       </Section>
@@ -188,20 +225,20 @@ export async function StudentDashboard({ user }: { user: CurrentUser }) {
   const todo = feedback.filter((f) => ['open', 'in_progress', 'reopened'].includes(f.resolution_status));
   return (
     <div className="space-y-6">
-      <PageTitle title="Student workspace" subtitle={<>Welcome, {user.name}. Team {p.team_name} · <Link className="text-indigo-700 underline" href={`/projects/${p.project_id}`}>{p.title}</Link></>} />
+      <Hero eyebrow={`Team ${p.team_name}`} title="Student workspace" subtitle={<>Welcome, {user.name}. <Link className="text-indigo-700 underline" href={`/projects/${p.project_id}`}>{p.title}</Link></>} level={risk?.risk_level ?? 'idle'} />
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2"><h2 className="mb-2 font-medium">Team progress</h2><ProgressBar pct={pct} />
           <ul className="mt-3 divide-y text-sm">{overview.nextMilestones.map((m) => { const dl = dueLabel(m.days_to_due); return (<li key={m.milestone_id} className="flex items-center justify-between py-2"><span>M{m.sequence_no} {m.title}</span><span className="flex items-center gap-3 text-xs"><span className={dl.overdue ? 'font-medium text-red-600' : 'text-slate-500'}>{fmt(m.due_date)} · {dl.text}</span><StatusChip status={m.status} /></span></li>); })}</ul>
           <p className="mt-2 text-xs text-slate-500">{milestones.filter((m) => m.status === 'approved').length} of {milestones.length} milestones approved.</p></Card>
-        <Card><h2 className="mb-2 font-medium">Delivery risk</h2>
-          {risk ? (<><StatusChip status={risk.risk_level} /><p className="mt-2 text-sm text-slate-700">{risk.reason}</p><Link className="mt-2 inline-block text-xs text-indigo-700 underline" href={`/projects/${p.project_id}/risk`}>Details and how it is calculated</Link></>) : <p className="text-sm text-slate-500">No assessment yet.</p>}</Card>
+        <Card><h2 className="mb-2 font-display font-medium">Delivery risk</h2>
+          {risk ? (<><div className="flex justify-center"><RadialGauge value={Number(risk.risk_score)} level={risk.risk_level} size={170}><StatusChip status={risk.risk_level} /></RadialGauge></div><p className="mt-2 text-sm text-slate-700">{risk.reason}</p><Link className="mt-2 inline-block text-xs text-indigo-700 underline" href={`/projects/${p.project_id}/risk`}>Details and how it is calculated</Link></>) : <p className="text-sm text-slate-500">No assessment yet.</p>}</Card>
       </div>
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2"><div className="mb-2 flex items-center justify-between"><h2 className="font-medium">My open tasks</h2><Link className="text-xs text-indigo-700 underline" href={`/projects/${p.project_id}/tasks`}>Task board</Link></div>
           {overview.tasks.length === 0 ? <p className="text-sm text-slate-500">Nothing assigned to you right now.</p> : (
             <ul className="divide-y text-sm">{overview.tasks.map((t) => (<li key={t.task_id} className="flex items-center justify-between py-2"><span>M{t.sequence_no} {t.title}</span><span className="flex items-center gap-3 text-xs"><span className={t.is_overdue ? 'font-medium text-red-600' : 'text-slate-500'}>due {fmt(t.due_date)}{t.is_overdue ? ' (overdue)' : ''}</span><StatusChip status={t.status} /></span></li>))}</ul>)}</Card>
         <Card><h2 className="mb-2 font-medium">My contribution</h2>
-          {me ? (<><div className="text-3xl font-semibold">{Number(me.indicator)}<span className="text-sm font-normal text-slate-500"> / 100</span></div><p className="mt-1 text-xs text-slate-600">{me.verified_items} verified · {me.unverified_items} waiting for the guide</p><Link className="mt-2 inline-block text-xs text-indigo-700 underline" href={`/projects/${p.project_id}/contribution`}>See details</Link></>) : <p className="text-sm text-slate-500">No data yet.</p>}</Card>
+          {me ? (<><div className="num font-display text-4xl font-semibold text-slate-900"><CountUp value={Number(me.indicator)} /><span className="text-sm font-normal text-slate-500"> / 100</span></div><p className="mt-1 text-xs text-slate-600">{me.verified_items} verified · {me.unverified_items} waiting for the guide</p><Link className="mt-2 inline-block text-xs text-indigo-700 underline" href={`/projects/${p.project_id}/contribution`}>See details</Link></>) : <p className="text-sm text-slate-500">No data yet.</p>}</Card>
       </div>
       <Card><div className="mb-2 flex items-center justify-between"><h2 className="font-medium">Feedback to resolve ({todo.length})</h2><Link className="text-xs text-indigo-700 underline" href={`/projects/${p.project_id}/feedback`}>Open feedback</Link></div>
         {todo.length === 0 ? <p className="text-sm text-slate-500">You have no open feedback.</p> : (

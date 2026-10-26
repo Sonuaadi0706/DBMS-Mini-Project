@@ -26,7 +26,7 @@ export default async function SimilarityPage({ searchParams }: { searchParams: P
       <PageTitle title="Similarity review" subtitle={<>Proposals that may overlap with another proposal in the same course. This is a <strong>review signal</strong>, never a verdict: you decide. A pair is flagged at {Math.round(c.threshold * 100)}% overall similarity, or when one section reaches {Math.round(c.sectionLimit * 100)}%.</>} />
       <div className="flex flex-wrap gap-2 text-sm">
         {FILTERS.map(([text, v]) => (
-          <Link key={text} href={v === undefined ? '/similarity?decision=' : `/similarity?decision=${v}`} className={`rounded-full border px-3 py-1 ${active === v ? 'bg-indigo-600 text-white' : 'bg-white hover:bg-slate-50'}`}>{text}</Link>
+          <Link key={text} href={v === undefined ? '/similarity?decision=' : `/similarity?decision=${v}`} className={`rounded-full border px-3 py-1 ${active === v ? 'bg-indigo-600 text-onbrand' : 'bg-white hover:bg-slate-50'}`}>{text}</Link>
         ))}
       </div>
 
