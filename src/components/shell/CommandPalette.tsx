@@ -24,8 +24,8 @@ export function CommandPalette({ open, onClose, items }: { open: boolean; onClos
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center px-4 pt-[14vh]" role="dialog" aria-modal="true" aria-label="Command palette">
-      <div onClick={onClose} className="absolute inset-0 animate-fade-in bg-black/55 backdrop-blur-sm" />
-      <div className="glass relative w-full max-w-lg animate-scale-in overflow-hidden rounded-2xl border border-slate-300 shadow-lift">
+      <div onClick={onClose} className="absolute inset-0 animate-fade-in bg-black/40" />
+      <div className="relative w-full max-w-lg animate-scale-in overflow-hidden rounded-xl border border-slate-200 bg-surface shadow-lift">
         <div className="flex items-center gap-3 border-b border-slate-200 px-4">
           <Icon name="search" className="h-5 w-5 text-slate-400" />
           <input ref={input} value={q} onChange={(e) => setQ(e.target.value)} placeholder="Type a page or action…"
@@ -42,7 +42,7 @@ export function CommandPalette({ open, onClose, items }: { open: boolean; onClos
           {shown.map((i, n) => (
             <li key={i.id}>
               <button onMouseMove={() => setIdx(n)} onClick={() => run(i)}
-                className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition ${n === idx ? 'bg-indigo-500/15 text-slate-900' : 'text-slate-600'}`}>
+                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition ${n === idx ? 'bg-slate-100 text-slate-900' : 'text-slate-600'}`}>
                 <Icon name={i.icon} className={`h-[18px] w-[18px] ${n === idx ? 'text-indigo-600' : ''}`} />
                 <span className="flex-1">{i.label}</span>
                 <span className="text-[11px] uppercase tracking-wider text-slate-400">{i.hint}</span>

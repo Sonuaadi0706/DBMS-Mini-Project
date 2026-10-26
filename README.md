@@ -13,7 +13,7 @@ ProjectPulse helps students, faculty guides, reviewers and administrators manage
 - **Evidence and fairness**: contribution evidence (only verified evidence counts), peer evaluation, a contribution view.
 - **Risk monitoring**: explainable score with six factors, history and trend, overdue triggers, sweep job.
 - **Originality**: semantic similarity (pgvector) flags possible overlap for faculty review; a student "Check originality" hint reveals nothing about other teams.
-- **Interface**: dark and light themes, live heartbeat motif that follows risk, animated gauges and counters, sidebar shell with a `⌘K` command palette, responsive down to phone width.
+- **Interface**: clean dark and light themes, a heartbeat motif that follows risk, animated gauge and counters, sidebar shell with a `⌘K` command palette, responsive down to phone width.
 - **Dashboards and reports** for the four roles, filters, CSV export, MongoDB document insights, audit log, administration area.
 
 ## Tech stack
@@ -87,9 +87,9 @@ All use the password you set as `SEED_DEFAULT_PASSWORD`.
 | Role | Accounts |
 |---|---|
 | Admin | `admin@projectpulse.test` |
-| Faculty guides | `guide1@`, `guide2@`, `guide3@projectpulse.test` (guide3 is also a reviewer: use the role switcher) |
+| Faculty guides | `guide1@` (Pavan AC), `guide2@`, `guide3@projectpulse.test` (guide3 is also a reviewer: use the role switcher) |
 | Reviewers | `reviewer1@`, `reviewer2@projectpulse.test` |
-| Students | `student01@` to `student14@projectpulse.test` |
+| Students | `student01@` (Aadish) to `student14@projectpulse.test` |
 
 Six demo teams show different situations: **Alpha** healthy (student01 to 03, guide1), **Bravo** delayed and high risk (student04, 05, guide2), **Charlie** unequal contribution (student06 to 08, guide1), **Delta** unresolved feedback and a missing test report (student09, 10, guide2), **Echo** a near-duplicate of Alpha awaiting similarity review (student11, 12, guide1), **Foxtrot** a similar topic in another course, revision requested (student13, 14, guide3).
 

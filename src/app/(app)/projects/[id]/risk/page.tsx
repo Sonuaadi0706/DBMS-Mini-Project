@@ -24,17 +24,17 @@ export default async function RiskPage({ params }: { params: Promise<{ id: strin
     <div className="stagger space-y-4">
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-1">
-          <h2 className="mb-3 font-display font-medium">Current risk</h2>
+          <h2 className="mb-3 font-medium">Current risk</h2>
           <div className="flex flex-col items-center">
             <RadialGauge value={Number(snap.risk_score)} level={snap.risk_level} size={200}><span className="mt-1 block"><StatusChip status={snap.risk_level} /></span></RadialGauge>
-            <Pulse level={pulseLevel(snap.risk_level)} width={260} height={44} glow className="mt-2" />
+            <Pulse level={pulseLevel(snap.risk_level)} width={240} height={40} className="mt-2" />
           </div>
           <p className="mt-3 text-sm text-slate-700">{snap.reason}</p>
           <p className="mt-2 text-xs text-slate-400">Calculated {fmt(snap.calculated_at)}</p>
           {(access.isGuide || access.isAdmin) && ['approved', 'in_progress'].includes(p.status) && <div className="mt-3"><RecalculateButton projectId={p.project_id} /></div>}
         </Card>
         {staff && (
-          <Card className="lg:col-span-2"><h2 className="mb-4 font-display font-medium">Why this score</h2><FactorBars breakdown={snap.breakdown} /></Card>
+          <Card className="lg:col-span-2"><h2 className="mb-4 font-medium">Why this score</h2><FactorBars breakdown={snap.breakdown} /></Card>
         )}
       </div>
 

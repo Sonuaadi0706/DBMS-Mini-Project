@@ -59,64 +59,61 @@ export function AppShell({ name, roles, activeRole, links, children }: {
 
   const sidebar = (
     <div className="flex h-full flex-col">
-      <div className="px-5 pb-4 pt-5"><Link href="/dashboard"><Logo tagline /></Link></div>
-      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-2" aria-label="Main">
+      <div className="flex h-14 items-center px-5"><Link href="/dashboard"><Logo size={30} /></Link></div>
+      <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-3" aria-label="Main">
         {links.map((l) => {
           const on = isActive(l.href);
           return (
             <Link key={l.href} href={l.href} aria-current={on ? 'page' : undefined}
-              className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${on ? 'bg-indigo-500/12 text-indigo-700' : 'text-slate-600 hover:bg-slate-200/60 hover:text-slate-900'}`}>
-              <span className={`absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-indigo-500 transition-all duration-300 ${on ? 'opacity-100 shadow-glow' : 'h-2 opacity-0'}`} />
-              <Icon name={l.icon} className={`h-[18px] w-[18px] transition-transform duration-200 group-hover:scale-110 ${on ? 'text-indigo-600' : ''}`} />
+              className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${on ? 'bg-slate-200/70 text-slate-900' : 'text-slate-600 hover:bg-slate-200/40 hover:text-slate-900'}`}>
+              <Icon name={l.icon} className={`h-[18px] w-[18px] ${on ? 'text-indigo-600' : 'text-slate-400'}`} />
               {l.label}
             </Link>
           );
         })}
       </nav>
-      <div className="m-3 rounded-2xl border border-slate-200 bg-white/50 p-3">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-blue-500 text-sm font-semibold text-onbrand">{initials(name)}</div>
-          <div className="min-w-0">
-            <div className="truncate text-sm font-medium text-slate-900">{name}</div>
-            <div className="text-xs text-slate-500">{ROLE_LABEL[activeRole] ?? activeRole}</div>
-          </div>
-        </div>
+      <div className="border-t border-slate-200 p-3">
         {roles.length > 1 && (
-          <select value={activeRole} onChange={(e) => switchRole(e.target.value)} aria-label="Switch role" className="mt-3 w-full !py-1.5 text-xs">
+          <select value={activeRole} onChange={(e) => switchRole(e.target.value)} aria-label="Switch role" className="mb-3 w-full !py-1.5 text-xs">
             {roles.map((r) => <option key={r} value={r}>{ROLE_LABEL[r] ?? r}</option>)}
           </select>
         )}
-        <button onClick={logout} className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg py-1.5 text-xs font-medium text-slate-500 transition hover:bg-red-500/10 hover:text-red-600">
-          <Icon name="logout" className="h-4 w-4" />Sign out
-        </button>
+        <div className="flex items-center gap-3 px-1">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-500/15 text-xs font-semibold text-indigo-700">{initials(name)}</div>
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-sm font-medium text-slate-900">{name}</div>
+            <div className="text-xs text-slate-500">{ROLE_LABEL[activeRole] ?? activeRole}</div>
+          </div>
+          <button onClick={logout} aria-label="Sign out" title="Sign out" className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-200/60 hover:text-slate-900"><Icon name="logout" className="h-[18px] w-[18px]" /></button>
+        </div>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen lg:pl-64">
-      <aside className="glass fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-slate-200 lg:block">{sidebar}</aside>
+    <div className="min-h-screen lg:pl-60">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 border-r border-slate-200 bg-appbg lg:block">{sidebar}</aside>
 
       {/* mobile drawer */}
       <div className={`fixed inset-0 z-40 lg:hidden ${open ? '' : 'pointer-events-none'}`} aria-hidden={!open}>
-        <div onClick={() => setOpen(false)} className={`absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0'}`} />
-        <aside className={`glass absolute inset-y-0 left-0 w-72 max-w-[85vw] border-r border-slate-200 transition-transform duration-300 ease-out ${open ? 'translate-x-0' : '-translate-x-full'}`}>{sidebar}</aside>
+        <div onClick={() => setOpen(false)} className={`absolute inset-0 bg-black/40 transition-opacity duration-200 ${open ? 'opacity-100' : 'opacity-0'}`} />
+        <aside className={`absolute inset-y-0 left-0 w-64 max-w-[85vw] border-r border-slate-200 bg-appbg transition-transform duration-200 ease-out ${open ? 'translate-x-0' : '-translate-x-full'}`}>{sidebar}</aside>
       </div>
 
-      <header className="glass sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-slate-200 px-4 sm:px-6">
-        <button onClick={() => setOpen(true)} aria-label="Open menu" className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-300 text-slate-600 lg:hidden"><Icon name="menu" /></button>
+      <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-slate-200 bg-appbg/85 px-4 backdrop-blur sm:px-6">
+        <button onClick={() => setOpen(true)} aria-label="Open menu" className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-200/60 lg:hidden"><Icon name="menu" /></button>
         <div className="hidden min-w-0 items-center gap-2 text-sm text-slate-500 sm:flex">
           <span>ProjectPulse</span><Icon name="chevron" className="h-3.5 w-3.5 -rotate-90" />
           <span className="truncate font-medium text-slate-800">{current?.label ?? 'Workspace'}</span>
         </div>
-        <button onClick={() => setPalette(true)} className="ml-auto flex h-10 min-w-0 flex-1 items-center gap-2 rounded-xl border border-slate-300 bg-slate-100/60 px-3 text-sm text-slate-500 transition hover:border-indigo-500/50 sm:ml-auto sm:max-w-xs sm:flex-none sm:basis-72">
-          <Icon name="search" className="h-4 w-4 shrink-0" /><span className="truncate">Search or jump to…</span>
-          <kbd className="ml-auto hidden rounded-md border border-slate-300 bg-white/60 px-1.5 py-0.5 font-mono text-[10px] sm:block">⌘K</kbd>
+        <button onClick={() => setPalette(true)} className="ml-auto flex h-9 min-w-0 flex-1 items-center gap-2 rounded-lg border border-slate-200 bg-surface px-3 text-sm text-slate-500 transition-colors hover:border-slate-300 sm:flex-none sm:basis-64">
+          <Icon name="search" className="h-4 w-4 shrink-0" /><span className="truncate">Search…</span>
+          <kbd className="ml-auto hidden rounded border border-slate-200 px-1.5 py-0.5 font-mono text-[10px] text-slate-400 sm:block">⌘K</kbd>
         </button>
         <div data-theme-toggle><ThemeToggle /></div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-8">
         <div key={path} className="page-enter">{children}</div>
       </main>
       <CommandPalette open={palette} onClose={() => setPalette(false)} items={items} />

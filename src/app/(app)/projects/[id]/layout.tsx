@@ -10,20 +10,19 @@ export default async function ProjectLayout({ children, params }: { children: Re
   const risk = await latestSnapshot(project.project_id);
   return (
     <div>
-      <div className="card-surface relative mb-5 overflow-hidden p-5 sm:p-6">
-        <div className="pointer-events-none absolute -right-8 top-1/2 hidden -translate-y-1/2 lg:block"><Pulse level={pulseLevel(risk?.risk_level)} width={380} height={80} glow /></div>
-        <div className="relative max-w-3xl">
-          <div className="mb-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-indigo-600">Team {project.team_name} · {project.course_name}</div>
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="font-display text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">{project.title}</h1>
-            <StatusChip status={project.status} />
-            {risk && <StatusChip status={risk.risk_level} />}
+      <div className="mb-1 flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0">
+          <div className="mb-1 text-xs font-medium text-indigo-600">Team {project.team_name} · {project.course_name}</div>
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">{project.title}</h1>
+          <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-600">
+            <StatusChip status={project.status} />{risk && <StatusChip status={risk.risk_level} />}
+            <Link className="ml-1 text-indigo-700 hover:underline" href={`/proposals/${project.project_id}`}>View proposal</Link>
           </div>
-          <p className="mt-2 text-sm text-slate-600"><Link className="text-indigo-700 underline" href={`/proposals/${project.project_id}`}>View proposal</Link></p>
         </div>
+        <div className="hidden opacity-80 lg:block"><Pulse level={pulseLevel(risk?.risk_level)} width={220} height={40} /></div>
       </div>
       <ProjectTabs projectId={project.project_id} />
-      <div className="mt-5">{children}</div>
+      <div className="mt-6">{children}</div>
     </div>
   );
 }

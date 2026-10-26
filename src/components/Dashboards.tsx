@@ -16,33 +16,33 @@ const LEVELS = ['low', 'moderate', 'high', 'critical'] as const;
 
 function Stat({ value, caption, tone, icon = 'target' }: { value: number | string; caption: string; tone?: string; icon?: IconName }) {
   return (
-    <Card interactive className="p-4">
+    <Card className="p-4">
       <div className="flex items-start justify-between">
-        <div className={`num font-display text-3xl font-semibold ${tone ?? 'text-slate-900'}`}>{typeof value === 'number' ? <CountUp value={value} /> : value}</div>
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600"><Icon name={icon} className="h-4 w-4" /></span>
+        <div className={`num text-3xl font-semibold tracking-tight ${tone ?? 'text-slate-900'}`}>{typeof value === 'number' ? <CountUp value={value} duration={700} /> : value}</div>
+        <Icon name={icon} className="h-[18px] w-[18px] text-slate-400" />
       </div>
       <div className="mt-1 text-xs text-slate-500">{caption}</div>
     </Card>
   );
 }
 
-/** Worst level among the projects (drives the heartbeat in the hero). */
+/** Worst level among the projects (drives the heartbeat in the page header). */
 function worstLevel(projects: { risk_level: string | null }[]): string {
   for (const l of ['critical', 'high', 'moderate', 'low']) if (projects.some((p) => p.risk_level === l)) return l;
   return 'idle';
 }
 
-/** Page header with a live heartbeat whose rhythm follows the portfolio's worst risk level. */
+/** Page header: title on the left, a quiet heartbeat on the right whose rhythm follows the portfolio's worst risk level. */
 function Hero({ eyebrow, title, subtitle, level, actions }: { eyebrow: string; title: string; subtitle: React.ReactNode; level: string; actions?: React.ReactNode }) {
   return (
-    <div className="card-surface relative mb-6 overflow-hidden p-6 sm:p-8">
-      <div className="pointer-events-none absolute -right-10 top-1/2 hidden -translate-y-1/2 opacity-90 md:block"><Pulse level={pulseLevel(level)} width={520} height={110} glow /></div>
-      <div className="relative max-w-xl">
-        <div className="mb-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-indigo-600">{eyebrow}</div>
-        <h1 className="font-display text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">{title}</h1>
-        <p className="mt-2 text-sm text-slate-600">{subtitle}</p>
+    <div className="relative mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-slate-200 pb-6">
+      <div>
+        <div className="mb-1 text-xs font-medium text-indigo-600">{eyebrow}</div>
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">{title}</h1>
+        <p className="mt-1 text-sm text-slate-600">{subtitle}</p>
         {actions && <div className="mt-4 flex flex-wrap gap-2">{actions}</div>}
       </div>
+      <div className="hidden opacity-80 md:block"><Pulse level={pulseLevel(level)} width={260} height={44} /></div>
     </div>
   );
 }
@@ -53,12 +53,9 @@ function RiskCards({ projects }: { projects: { risk_level: string | null }[] }) 
   return (
     <div className="stagger grid grid-cols-2 gap-3 md:grid-cols-4">
       {LEVELS.map((l) => (
-        <Card key={l} interactive className="relative overflow-hidden p-4">
-          <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: `linear-gradient(90deg, ${levelRgb(l)}, transparent)` }} />
-          <div className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full blur-2xl" style={{ background: levelRgb(l, n(l) ? 0.25 : 0.06) }} />
-          <div className="num relative font-display text-4xl font-semibold text-slate-900"><CountUp value={n(l)} /></div>
-          <div className="relative mt-0.5 flex items-center gap-2 text-xs text-slate-500"><span className="h-2 w-2 rounded-full" style={{ background: levelRgb(l), boxShadow: `0 0 8px ${levelRgb(l)}` }} />{label(l)} risk</div>
-          <Pulse level={l} width={140} height={22} className="relative mt-2 opacity-80" />
+        <Card key={l} className="p-4">
+          <div className="flex items-center gap-2 text-xs font-medium text-slate-500"><span className="h-2 w-2 rounded-full" style={{ background: levelRgb(l) }} />{label(l)} risk</div>
+          <div className="num mt-2 text-3xl font-semibold tracking-tight text-slate-900"><CountUp value={n(l)} duration={700} /></div>
         </Card>
       ))}
     </div>
@@ -66,7 +63,7 @@ function RiskCards({ projects }: { projects: { risk_level: string | null }[] }) 
 }
 
 const Section = ({ title, children, right }: { title: string; children: React.ReactNode; right?: React.ReactNode }) => (
-  <section><div className="mb-3 flex items-center justify-between"><h2 className="flex items-center gap-2 font-display text-lg font-semibold text-slate-900"><span className="h-4 w-1 rounded-full bg-indigo-500" />{title}</h2>{right}</div>{children}</section>
+  <section><div className="mb-3 flex items-center justify-between"><h2 className="text-base font-semibold text-slate-900">{title}</h2>{right}</div>{children}</section>
 );
 
 function ProjectRiskTable({ rows }: { rows: DashProject[] }) {
@@ -188,7 +185,7 @@ export async function AdminDashboard({ user }: { user: CurrentUser }) {
         {courses.length === 0 ? <Empty>No running projects.</Empty> : (
           <div className="card-surface overflow-x-auto"><table className="w-full text-center text-sm">
             <thead className="border-b text-xs uppercase text-slate-500"><tr><th className="p-2 text-left">Course</th>{cols.map((c) => <th key={c} className="p-2">{label(c)}</th>)}</tr></thead>
-            <tbody>{courses.map((c) => (<tr key={c} className="border-b last:border-0"><td className="p-2 text-left font-medium">{c}</td>{cols.map((l) => { const n = cell(c, l); const bg = l === 'unassessed' ? 'rgb(var(--c-slate-500) / .18)' : levelRgb(l, 0.18); const color = l === 'unassessed' ? 'rgb(var(--c-slate-500))' : levelRgb(l); return <td key={l} className="p-2"><span className="num inline-block min-w-9 rounded-lg px-2 py-1 font-semibold" style={n ? { background: bg, color } : { color: 'rgb(var(--c-slate-300))' }}>{n}</span></td>; })}</tr>))}</tbody>
+            <tbody>{courses.map((c) => (<tr key={c} className="border-b last:border-0"><td className="p-2 text-left font-medium">{c}</td>{cols.map((l) => { const n = cell(c, l); const bg = l === 'unassessed' ? 'rgb(var(--c-slate-500) / .18)' : levelRgb(l, 0.18); const color = l === 'unassessed' ? 'rgb(var(--c-slate-500))' : levelRgb(l); return <td key={l} className="p-2"><span className="num inline-block min-w-9 rounded-md px-2 py-0.5 font-semibold" style={n ? { background: bg, color } : { color: 'rgb(var(--c-slate-300))' }}>{n}</span></td>; })}</tr>))}</tbody>
           </table></div>
         )}
       </Section>
@@ -230,7 +227,7 @@ export async function StudentDashboard({ user }: { user: CurrentUser }) {
         <Card className="lg:col-span-2"><h2 className="mb-2 font-medium">Team progress</h2><ProgressBar pct={pct} />
           <ul className="mt-3 divide-y text-sm">{overview.nextMilestones.map((m) => { const dl = dueLabel(m.days_to_due); return (<li key={m.milestone_id} className="flex items-center justify-between py-2"><span>M{m.sequence_no} {m.title}</span><span className="flex items-center gap-3 text-xs"><span className={dl.overdue ? 'font-medium text-red-600' : 'text-slate-500'}>{fmt(m.due_date)} · {dl.text}</span><StatusChip status={m.status} /></span></li>); })}</ul>
           <p className="mt-2 text-xs text-slate-500">{milestones.filter((m) => m.status === 'approved').length} of {milestones.length} milestones approved.</p></Card>
-        <Card><h2 className="mb-2 font-display font-medium">Delivery risk</h2>
+        <Card><h2 className="mb-2 font-medium">Delivery risk</h2>
           {risk ? (<><div className="flex justify-center"><RadialGauge value={Number(risk.risk_score)} level={risk.risk_level} size={170}><StatusChip status={risk.risk_level} /></RadialGauge></div><p className="mt-2 text-sm text-slate-700">{risk.reason}</p><Link className="mt-2 inline-block text-xs text-indigo-700 underline" href={`/projects/${p.project_id}/risk`}>Details and how it is calculated</Link></>) : <p className="text-sm text-slate-500">No assessment yet.</p>}</Card>
       </div>
       <div className="grid gap-4 lg:grid-cols-3">
@@ -238,7 +235,7 @@ export async function StudentDashboard({ user }: { user: CurrentUser }) {
           {overview.tasks.length === 0 ? <p className="text-sm text-slate-500">Nothing assigned to you right now.</p> : (
             <ul className="divide-y text-sm">{overview.tasks.map((t) => (<li key={t.task_id} className="flex items-center justify-between py-2"><span>M{t.sequence_no} {t.title}</span><span className="flex items-center gap-3 text-xs"><span className={t.is_overdue ? 'font-medium text-red-600' : 'text-slate-500'}>due {fmt(t.due_date)}{t.is_overdue ? ' (overdue)' : ''}</span><StatusChip status={t.status} /></span></li>))}</ul>)}</Card>
         <Card><h2 className="mb-2 font-medium">My contribution</h2>
-          {me ? (<><div className="num font-display text-4xl font-semibold text-slate-900"><CountUp value={Number(me.indicator)} /><span className="text-sm font-normal text-slate-500"> / 100</span></div><p className="mt-1 text-xs text-slate-600">{me.verified_items} verified · {me.unverified_items} waiting for the guide</p><Link className="mt-2 inline-block text-xs text-indigo-700 underline" href={`/projects/${p.project_id}/contribution`}>See details</Link></>) : <p className="text-sm text-slate-500">No data yet.</p>}</Card>
+          {me ? (<><div className="num text-4xl font-semibold tracking-tight text-slate-900"><CountUp value={Number(me.indicator)} /><span className="text-sm font-normal text-slate-500"> / 100</span></div><p className="mt-1 text-xs text-slate-600">{me.verified_items} verified · {me.unverified_items} waiting for the guide</p><Link className="mt-2 inline-block text-xs text-indigo-700 underline" href={`/projects/${p.project_id}/contribution`}>See details</Link></>) : <p className="text-sm text-slate-500">No data yet.</p>}</Card>
       </div>
       <Card><div className="mb-2 flex items-center justify-between"><h2 className="font-medium">Feedback to resolve ({todo.length})</h2><Link className="text-xs text-indigo-700 underline" href={`/projects/${p.project_id}/feedback`}>Open feedback</Link></div>
         {todo.length === 0 ? <p className="text-sm text-slate-500">You have no open feedback.</p> : (

@@ -26,7 +26,7 @@ export function RadialGauge({ value, level, size = 190, children }: { value: num
         </defs>
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgb(var(--c-slate-200))" strokeWidth={stroke} strokeLinecap="round" strokeDasharray={`${arc} ${c}`} />
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={`url(#${id})`} strokeWidth={stroke} strokeLinecap="round"
-          strokeDasharray={`${on ? arc * pct : 0} ${c}`} style={{ transition: 'stroke-dasharray 1.5s cubic-bezier(.2,.8,.2,1)', filter: `drop-shadow(0 0 8px ${color})` }} />
+          strokeDasharray={`${on ? arc * pct : 0} ${c}`} style={{ transition: 'stroke-dasharray 1.5s cubic-bezier(.2,.8,.2,1)' }} />
       </svg>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="pointer-events-none absolute inset-0">
         {[0.25, 0.5, 0.75].map((p) => <line key={p} {...tick(p)} stroke="rgb(var(--c-slate-400))" strokeOpacity=".5" strokeWidth="1.5" />)}

@@ -48,7 +48,7 @@ d('peer evaluation (Alpha)', () => {
     expect(self.view).toBe('self');
     expect(self.received.ratings).toBe(3);                                                              // 2 seeded + the new one
     expect(self.received.comments).toContain('Great ER diagram.');
-    expect(JSON.stringify(self)).not.toMatch(/Chiranthan|evaluator/);                                   // no names of raters
+    expect(JSON.stringify(self)).not.toMatch(/Aadish|evaluator/);                                   // no names of raters
     expect(self.given).toContainEqual({ milestone_id: m3, evaluatee_id: id1 });                        // plus the two seeded ratings for milestone 2
     expect((await s4.get(`/api/projects/${alpha}/peer-evaluations/summary`)).status).toBeGreaterThanOrEqual(403);
   });

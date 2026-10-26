@@ -18,7 +18,7 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
   }
   return (
     <button onClick={flip} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`} title="Toggle theme"
-      className={`relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-slate-300 bg-white/60 text-slate-600 transition hover:border-indigo-500/60 hover:text-slate-900 ${className}`}>
+      className={`relative inline-flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg text-slate-500 transition-colors hover:bg-slate-200/60 hover:text-slate-900 ${className}`}>
       <span className={`absolute transition-all duration-500 ${theme === 'dark' ? 'rotate-0 scale-100 opacity-100' : '-rotate-90 scale-50 opacity-0'}`}><Icon name="moon" /></span>
       <span className={`absolute transition-all duration-500 ${theme === 'light' ? 'rotate-0 scale-100 opacity-100' : 'rotate-90 scale-50 opacity-0'}`}><Icon name="sun" /></span>
     </button>

@@ -23,7 +23,7 @@ export function pulseLevel(level: string | null | undefined): PulseLevel {
   return level === 'low' || level === 'moderate' || level === 'high' || level === 'critical' ? level : 'idle';
 }
 
-export function Pulse({ level = 'idle', width = 240, height = 48, className = '', glow = true }: { level?: PulseLevel; width?: number; height?: number; className?: string; glow?: boolean }) {
+export function Pulse({ level = 'idle', width = 240, height = 48, className = '', glow = false }: { level?: PulseLevel; width?: number; height?: number; className?: string; glow?: boolean }) {
   const look = LOOK[level];
   const w = width / 2;                                  // two heartbeats are visible at a time
   let d = `M0 ${height / 2}`;
