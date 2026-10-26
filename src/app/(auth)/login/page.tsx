@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Icon } from '@/components/icons';
 import { Logo } from '@/components/Logo';
 import { Pulse } from '@/components/viz/Pulse';
-import { ThemeToggle } from '@/components/shell/ThemeToggle';
+import { ThemeApply } from '@/components/shell/ThemeApply';
 import { ErrorBanner } from '@/components/ui';
 
 // Demo shortcuts only fill the e-mail field; the password is never shown or stored here.
@@ -96,7 +96,7 @@ const POINTS: { icon: 'pulse' | 'similarity' | 'shield'; title: string; text: st
 export default function LoginPage() {
   return (
     <main className="relative grid min-h-screen lg:grid-cols-[1.1fr_1fr]">
-      <div className="absolute right-4 top-4 z-10"><ThemeToggle /></div>
+      <ThemeApply mode="light" />
 
       <section className="relative hidden flex-col justify-between overflow-hidden border-r border-slate-200 bg-surface p-12 lg:flex">
         <div className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(ellipse 70% 50% at 20% 0%, rgb(var(--c-slate-900) / .05), transparent 70%), radial-gradient(ellipse 60% 40% at 100% 100%, rgb(var(--c-slate-900) / .03), transparent 70%)' }} />

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Icon, type IconName } from '../icons';
 import { Logo } from '../Logo';
 import { ThemeToggle } from './ThemeToggle';
+import { ThemeApply } from './ThemeApply';
 import { CommandPalette, type PaletteItem } from './CommandPalette';
 
 export interface NavLink { href: string; label: string; icon: IconName }
@@ -92,6 +93,7 @@ export function AppShell({ name, roles, activeRole, links, children }: {
 
   return (
     <div className="min-h-screen lg:pl-60">
+      <ThemeApply mode="user" />
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 border-r border-slate-200 bg-appbg lg:block">{sidebar}</aside>
 
       {/* mobile drawer */}
