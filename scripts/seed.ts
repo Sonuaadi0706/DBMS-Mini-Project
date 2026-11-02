@@ -6,6 +6,7 @@ import { seedScenarios } from '../db/seeds/scenarios';
 import { seedMongo } from '../db/seeds/mongo';
 import { backfill } from '../src/lib/embeddings/backfill';
 import { pool } from '../src/lib/db/pg';
+import { mongoDatabaseUrl } from '../src/lib/db/urls';
 
 // Reference data, demo users and the six team scenarios (Alpha to Foxtrot), all in one transaction.
 const SCENARIO_STEPS = 12; // 9 scenario steps + 3 MongoDB steps
@@ -33,7 +34,7 @@ async function main() {
     // still works; documents and discussion threads will be missing until `npm run db:seed` is re-run.
     let mongoNote = '';
     try {
-      const m = await seedMongo(client, requireEnv('MONGODB_URI'), process.env.MONGODB_DB ?? 'projectpulse', (l) => bar.increment(1, { step: l }));
+      const m = await seedMongo(client, mongoDatabaseUrl(), process.env.MONGODB_DB ?? 'projectpulse', (l) => bar.increment(1, { step: l }));
       mongoNote = `MongoDB: ${m.documents} documents, ${m.threads} feedback threads, 3 meeting notes.`;
     } catch (e) {
       mongoNote = `WARNING: MongoDB was not seeded (${(e as Error).message}).`;

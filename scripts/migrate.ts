@@ -32,7 +32,7 @@ async function ensureDatabase(url: string): Promise<void> {
 
 export async function migrate(): Promise<void> {
   const url = adminDatabaseUrl();
-  await ensureDatabase(url);
+  if (process.env.SKIP_DATABASE_CREATE !== '1') await ensureDatabase(url);
 
   const files = fs.readdirSync(MIGRATIONS_DIR).filter((f) => /^\d+_.*\.sql$/.test(f)).sort();
   const client = new Client({ connectionString: url });
