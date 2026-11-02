@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { del, get, put } from '@vercel/blob';
 import { ApiError } from '@/lib/api/errors';
 
 /**
@@ -19,6 +20,7 @@ export const ALLOWED_TYPES: Record<string, string> = {
 
 export const baseDir = () => path.resolve(process.cwd(), process.env.STORAGE_LOCAL_PATH ?? './storage/uploads');
 export const maxBytes = () => Number(process.env.STORAGE_MAX_FILE_MB ?? 10) * 1024 * 1024;
+const useBlob = () => process.env.STORAGE_DRIVER === 'vercel-blob';
 
 const KEY_RE = /^[A-Za-z0-9_-]+(\/[A-Za-z0-9_.-]+)+$/;
 
@@ -67,9 +69,13 @@ export async function saveUpload(file: File): Promise<StoredFile> {
   }
   const now = new Date();
   const key = `${now.getUTCFullYear()}${String(now.getUTCMonth() + 1).padStart(2, '0')}/${randomUUID()}.${ext}`;
-  const full = safePath(key);
-  await fs.mkdir(path.dirname(full), { recursive: true });
-  await fs.writeFile(full, bytes, { mode: 0o640 });
+  if (useBlob()) {
+    await put(key, bytes, { access: 'private', addRandomSuffix: false, contentType: ALLOWED_TYPES[ext] });
+  } else {
+    const full = safePath(key);
+    await fs.mkdir(path.dirname(full), { recursive: true });
+    await fs.writeFile(full, bytes, { mode: 0o640 });
+  }
   const text = ext === 'md' || ext === 'txt' ? bytes.toString('utf8') : null;
   return {
     key, fileName, size: bytes.length, mime: ALLOWED_TYPES[ext],
@@ -81,17 +87,29 @@ export async function saveUpload(file: File): Promise<StoredFile> {
 /** Compensating action when a database step fails after the file was written. Never throws. */
 export async function deleteStored(key: string | undefined | null): Promise<void> {
   if (!key || /^https?:/i.test(key)) return;
-  try { await fs.unlink(safePath(key)); } catch { /* already gone */ }
+  try {
+    if (useBlob()) await del(key);
+    else await fs.unlink(safePath(key));
+  } catch { /* already gone or compensating cleanup failed */ }
 }
 
 export async function readStored(key: string): Promise<Buffer> {
+  if (useBlob()) {
+    const result = await get(key, { access: 'private' });
+    if (!result || result.statusCode !== 200) throw new Error('Stored file not found');
+    return Buffer.from(await new Response(result.stream).arrayBuffer());
+  }
   return fs.readFile(safePath(key));
 }
 
 /** Used by the seed: write demo content under seed/ so downloads work for seeded versions. */
 export async function writeSeedFile(key: string, content: string): Promise<{ size: number; checksum: string }> {
-  const full = safePath(key);
-  await fs.mkdir(path.dirname(full), { recursive: true });
-  await fs.writeFile(full, content, { mode: 0o640 });
+  if (useBlob()) {
+    await put(key, content, { access: 'private', addRandomSuffix: false, contentType: 'text/markdown; charset=utf-8' });
+  } else {
+    const full = safePath(key);
+    await fs.mkdir(path.dirname(full), { recursive: true });
+    await fs.writeFile(full, content, { mode: 0o640 });
+  }
   return { size: Buffer.byteLength(content), checksum: createHash('sha256').update(content).digest('hex') };
 }

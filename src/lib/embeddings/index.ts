@@ -11,7 +11,12 @@ const g = globalThis as unknown as { __ppEmbedder?: Promise<FeatureExtractionPip
 function extractor(): Promise<FeatureExtractionPipeline> {
   g.__ppEmbedder ??= (async () => {
     // The library's `pipeline` typing is huge; a narrow signature keeps the compiler fast and is all we use.
-    const { pipeline } = (await import('@huggingface/transformers')) as unknown as { pipeline: (task: string, model: string) => Promise<unknown> };
+    const { pipeline, env } = (await import('@huggingface/transformers')) as unknown as {
+      pipeline: (task: string, model: string) => Promise<unknown>;
+      env: { cacheDir: string };
+    };
+    // Vercel Functions can write to /tmp, while the deployment bundle is read-only.
+    if (process.env.VERCEL) env.cacheDir = '/tmp/projectpulse-models';
     return (await pipeline('feature-extraction', MODEL_NAME)) as FeatureExtractionPipeline;
   })().catch((e) => { g.__ppEmbedder = undefined; throw e; });   // allow a retry after a failed download
   return g.__ppEmbedder;

@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@huggingface/transformers": "^3.0.0",
+    "@vercel/blob": "^2.8.2",
     "bcryptjs": "^2.4.3",
     "jose": "^5.9.6",
     "mongodb": "^6.10.0",

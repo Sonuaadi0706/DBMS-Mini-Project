@@ -1,8 +1,7 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import { MongoClient, ObjectId } from 'mongodb';
 import type { Client } from 'pg';
 import { initCollections, COLLECTIONS } from '../mongo/collections';
+import { readStored } from '../../src/lib/storage';
 
 const TYPE_MAP: Record<string, string> = {
   proposal: 'Proposal', srs: 'SRS', design_doc: 'Design', source_code: 'Other', screenshot: 'Other',
@@ -42,8 +41,7 @@ export async function seedMongo(pg: Client, uri: string, dbName: string, step: (
            FROM document_versions WHERE deliverable_id = $1 ORDER BY version_number`, [d.deliverable_id]);
       if (vs.length === 0) continue;
       const lastKey = vs[vs.length - 1].file_url as string;
-      const file = path.resolve(process.cwd(), process.env.STORAGE_LOCAL_PATH ?? './storage/uploads', lastKey);
-      const text = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
+      const text = await readStored(lastKey).then((file) => file.toString('utf8')).catch(() => '');
       await db.collection('documents').insertOne({
         _id: new ObjectId(d.mongo_doc_id), projectId: d.project_id, milestoneId: d.milestone_id, deliverableId: d.deliverable_id,
         documentType: TYPE_MAP[d.deliverable_type] ?? 'Other', deliverableType: d.deliverable_type, title: d.title,

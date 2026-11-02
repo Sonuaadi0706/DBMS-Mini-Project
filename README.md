@@ -72,7 +72,9 @@ Real values live only in `.env`, which is git-ignored. `.env.example` has placeh
 | `MONGODB_URI`, `MONGODB_DB` | MongoDB connection |
 | `AUTH_SECRET` | Signs session tokens (long random string) |
 | `SESSION_MAX_AGE_HOURS` | Session length (default 8) |
-| `STORAGE_DRIVER`, `STORAGE_LOCAL_PATH`, `STORAGE_MAX_FILE_MB` | Upload folder (outside `public/`) and size limit |
+| `STORAGE_DRIVER`, `STORAGE_LOCAL_PATH`, `STORAGE_MAX_FILE_MB` | Local upload folder or private Vercel Blob store and size limit |
+| `BLOB_READ_WRITE_TOKEN` | Private Vercel Blob store token when `STORAGE_DRIVER=vercel-blob` |
+| `SKIP_DATABASE_CREATE` | Set to `1` when using a managed database that is already provisioned |
 | `EMBEDDING_PROVIDER`, `EMBEDDING_MODEL`, `EMBEDDING_DIM` | Local embedding model and its dimension (384) |
 | `SIMILARITY_THRESHOLD`, `SIMILARITY_TOP_K` | Overlap threshold (0.80) and number of matches kept |
 | `JOB_SECRET` | Lets a scheduler call `POST /api/jobs/risk-sweep` (header `x-job-secret`) |

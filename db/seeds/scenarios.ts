@@ -1,8 +1,7 @@
 import { createHash } from 'node:crypto';
-import fs from 'node:fs';
-import path from 'node:path';
 import { ObjectId } from 'mongodb';
 import type { Client } from 'pg';
+import { writeSeedFile } from '../../src/lib/storage';
 
 /**
  * Demo scenarios (spec 17.1). Everything is dated relative to CURRENT_DATE so the overdue / at-risk
@@ -202,14 +201,7 @@ export async function seedScenarios(
   }
 
   // ---- deliverables, reviews, milestones ----------------------------------------------------
-  /** Seeded versions get a real (tiny) markdown file so downloads and text extraction work in the demo. */
-  function writeSeedFile(key: string, content: string): { size: number; checksum: string } {
-    const full = path.resolve(process.cwd(), process.env.STORAGE_LOCAL_PATH ?? './storage/uploads', key);
-    fs.mkdirSync(path.dirname(full), { recursive: true });
-    fs.writeFileSync(full, content);
-    return { size: Buffer.byteLength(content), checksum: sha(content) };
-  }
-
+  /** Seeded versions get a real (tiny) markdown file so downloads work in the demo. */
   async function addDeliverable(msId: number, submitter: number, d: Deliverable): Promise<number> {
     await actor(S(submitter));
     const lastAgo = Math.min(...d.versions.map((v) => v.ago));
@@ -223,7 +215,7 @@ export async function seedScenarios(
       const name = `${d.type}_v${i + 1}.md`;
       const key = `seed/m${msId}/d${id}/${name}`;
       const body = `# ${d.title}\n\nVersion ${i + 1}\n\nChange summary: ${v.summary}\n\n_Seeded demo document for ProjectPulse._\n`;
-      const f = writeSeedFile(key, body);
+      const f = await writeSeedFile(key, body);
       await db.query(
         `INSERT INTO document_versions(deliverable_id, change_summary, file_name, file_url, file_size_bytes, checksum_sha256, uploaded_by, uploaded_at)
          VALUES ($1,$2,$3,$4,$5,$6,$7, now() - make_interval(days => $8::int))`,
