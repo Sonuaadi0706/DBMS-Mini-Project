@@ -1,5 +1,4 @@
 import { Pool, types, type PoolClient, type QueryResultRow } from 'pg';
-import { appDatabaseUrl } from './urls';
 
 // DATE columns stay plain 'YYYY-MM-DD' strings. The default parser builds a local-time Date, which
 // shifts calendar dates by a day depending on the server time zone.
@@ -10,7 +9,8 @@ const g = globalThis as unknown as { __ppPool?: Pool };
 
 export function pool(): Pool {
   if (!g.__ppPool) {
-    const url = appDatabaseUrl();
+    const url = process.env.DATABASE_URL;
+    if (!url) throw new Error('DATABASE_URL is not set (see .env.example)');
     g.__ppPool = new Pool({
       connectionString: url,
       max: 10,

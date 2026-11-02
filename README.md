@@ -61,16 +61,15 @@ Individual steps: `npm run mongo:init` (collections, validators, indexes; the se
 
 ### Environment variables
 
-Local values live in `.env`, which is git-ignored. Hosted values are injected as service environment variables. `.env.example` has placeholders.
+Real values live only in `.env`, which is git-ignored. `.env.example` has placeholders.
 
 | Variable | Purpose |
 |---|---|
-| `DATABASE_URL` | App connection, as the least-privilege role `pp_app`; on Render it is derived from the owner URL and `APP_DB_PASSWORD` |
+| `DATABASE_URL` | App connection, as the least-privilege role `pp_app` |
 | `MIGRATION_DATABASE_URL` | Owner connection used by migrations and seeding |
 | `APP_DB_PASSWORD` | Password migration 013 gives the `pp_app` role |
-| `SKIP_DATABASE_CREATE` | Set to `1` for an already provisioned managed PostgreSQL database |
 | `DB_SEARCH_PATH` | `projectpulse,public` |
-| `MONGODB_URI`, `MONGODB_DB` | MongoDB connection; on Render the URI is built from `MONGODB_HOST`, `MONGODB_USER`, and `MONGODB_PASSWORD` |
+| `MONGODB_URI`, `MONGODB_DB` | MongoDB connection |
 | `AUTH_SECRET` | Signs session tokens (long random string) |
 | `SESSION_MAX_AGE_HOURS` | Session length (default 8) |
 | `STORAGE_DRIVER`, `STORAGE_LOCAL_PATH`, `STORAGE_MAX_FILE_MB` | Upload folder (outside `public/`) and size limit |
@@ -80,17 +79,6 @@ Local values live in `.env`, which is git-ignored. Hosted values are injected as
 | `SEED_DEFAULT_PASSWORD` | Password given to every demo account by the seed (only used there) |
 | `SEED_EMBEDDINGS` | `0` skips embeddings during the seed |
 | `ENABLE_TEST_HOOKS` | Test only: lets API tests force a failure inside the submission (never honoured in production) |
-
-### Deploy on Render
-
-The [`render.yaml`](render.yaml) Blueprint defines the complete hosted stack: the Next.js frontend and API, Render PostgreSQL with pgvector, a private MongoDB 7 service, and persistent disks for MongoDB data and uploads. Render stores generated database and session credentials as environment variables; no production secret belongs in Git. These services use paid compute and disks.
-
-1. In Render, create a Blueprint from this repository and select `render.yaml` on `main`. Grant Render access to the repository if prompted.
-2. Enter a strong `SEED_DEFAULT_PASSWORD` when Render prompts for it. Save it securely; the initial deploy seeds the demo accounts with this password.
-3. Apply the Blueprint. The pre-deploy command migrates PostgreSQL and initializes MongoDB. After the first successful deploy, the initial deploy hook seeds both databases and the sample upload files.
-4. Wait for the first deploy hook to finish, then open the `projectpulse` service URL and sign in with `admin@projectpulse.test` and the seed password. Verify a seeded project, a document download, and the Similarity page.
-
-Render's [`pgvector` support](https://render.com/docs/postgresql-extensions) lets migration 001 enable `vector` directly. The PostgreSQL service accepts private-network connections only. Keep the web service's upload disk mounted at the path in `STORAGE_LOCAL_PATH`; without it, uploaded files are lost on redeploy. Back up PostgreSQL, MongoDB (`mongodump`), and the upload disk before restoring or moving the stack. If the initial seed hook reports a MongoDB or embedding warning, fix the service connection or model download, then run `npm run mongo:reconcile` or `npm run embed:backfill` in the Render shell as appropriate.
 
 ### Demo accounts
 

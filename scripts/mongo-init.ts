@@ -1,10 +1,10 @@
 import cliProgress from 'cli-progress';
 import { MongoClient } from 'mongodb';
+import { requireEnv } from './lib/env';
 import { COLLECTIONS, initCollections } from '../db/mongo/collections';
-import { mongoDatabaseUrl } from '../src/lib/db/urls';
 
 async function main() {
-  const client = await new MongoClient(mongoDatabaseUrl(), { serverSelectionTimeoutMS: 4000 }).connect();
+  const client = await new MongoClient(requireEnv('MONGODB_URI'), { serverSelectionTimeoutMS: 4000 }).connect();
   try {
     const db = client.db(process.env.MONGODB_DB ?? 'projectpulse');
     const names = Object.keys(COLLECTIONS);
