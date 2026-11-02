@@ -5,6 +5,8 @@ import { query } from '@/lib/db/pg';
 import { searchByText } from '@/lib/embeddings/service';
 import { SimilaritySearch } from '@/lib/validation/schemas';
 
+export const maxDuration = 300;
+
 // Faculty free-text semantic search ("proposals about hospital queues"), limited to the courses they supervise.
 export const POST = api(async (req) => {
   const user = await requireUser();

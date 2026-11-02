@@ -7,6 +7,8 @@ import { getProject } from '@/lib/data/queries';
 import { ProposalComplete } from '@/lib/validation/schemas';
 import { embedAndScreenSafely } from '@/lib/embeddings/service';
 
+export const maxDuration = 300;
+
 // draft | revision_requested -> submitted, with an immutable history row, in one transaction.
 // After the commit the proposal is embedded and screened for overlap (faculty review signal only).
 export const POST = api<{ id: string }>(async (_req, { id }) => {

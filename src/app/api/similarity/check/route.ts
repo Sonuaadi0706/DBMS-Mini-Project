@@ -5,6 +5,8 @@ import { requireTeamMember } from '@/lib/auth/access';
 import { draftOverlaps } from '@/lib/embeddings/service';
 import { SimilarityCheck } from '@/lib/validation/schemas';
 
+export const maxDuration = 300;
+
 /**
  * Student "Check originality" hint (spec 12.1 step 7). It answers ONLY yes / no plus a fixed sentence: no titles,
  * no text, no scores and no team names from other proposals ever reach the student.
