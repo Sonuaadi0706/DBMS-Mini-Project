@@ -132,6 +132,8 @@ docs/            DECISIONS, data dictionary, ER diagram, EXPLAIN evidence, test 
 report.pdf       the project report
 ```
 
+The original full build specification is preserved in [`docs/PROJECTPULSE_SPEC.md`](docs/PROJECTPULSE_SPEC.md).
+
 ## Database design (details in `docs/`)
 
 - `docs/data_dictionary.md`, `docs/relational_schema.md`, `docs/er_diagram.mmd` / `er_overview.mmd`: **generated from the live schema** by `npm run docs:data-dictionary`.
